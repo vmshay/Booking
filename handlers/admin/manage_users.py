@@ -1,14 +1,15 @@
-from database import sql_check_user,sql_parse_users,sql_query_send
+import database
 from aiogram import types, Dispatcher
 from functions import beauty_reg_request
 from keyboards import user_manage_kb
 
 
 async def list_users(message: types.Message):
-    if not sql_check_user(f"select name,phone from user_table where approved = '0'"):
+    Db = database.Database()
+    if not Db.sql_parse_users("select id,name,phone from user_table where approved = '0'"):
         await message.answer('Заявки на регистрацию отсутствуют')
     else:
-        data = sql_parse_users(f"select id,name,phone from user_table where approved = '0'")
+        data = Db.sql_parse_users("select id,name,phone from user_table where approved = '0'")
         await message.answer(beauty_reg_request(data[0]),
                              reply_markup=user_manage_kb(f"accept:{data[0]['ID']}",
                                                          f"deny:{data[0]['ID']}",
@@ -18,15 +19,16 @@ async def list_users(message: types.Message):
 
 
 async def next_user_page(call: types.CallbackQuery):
-    data = sql_parse_users(f"select id,name,phone from user_table where approved = '0'")
+    Db = database.Database()
+    data = Db.sql_parse_users("select id,name,phone from user_table where approved = '0'")
     index = int(call.data.split(":")[1]) + 1
 
+    if not data:
+        await call.message.answer('Заявки на регистрацию отсутствуют')
     if index == len(data):
         pass
-    elif not data:
-        await call.message.answer('Заявки на регистрацию отсутствуют')
     else:
-        print(f"next: {index}")
+        # print(f"next: {index}")
         user_id = data[index]['ID']
         await call.message.edit_text(beauty_reg_request(data[index]),
                                      reply_markup=user_manage_kb(f"accept:{user_id}",
@@ -37,9 +39,10 @@ async def next_user_page(call: types.CallbackQuery):
 
 
 async def prev_user_page(call: types.CallbackQuery):
-    data = sql_parse_users(f"select id,name,phone from user_table where approved = '0'")
+    Db = database.Database()
+    data = Db.sql_parse_users("select id,name,phone from user_table where approved = '0'")
     index = int(call.data.split(":")[1])-1
-    print(f"prev_index{index}")
+    # print(f"prev_index{index}")
     if not data:
         await call.message.answer('Заявки на регистрацию отсутствуют')
     elif index < 0:
@@ -55,19 +58,21 @@ async def prev_user_page(call: types.CallbackQuery):
 
 
 async def accept_user(call: types.CallbackQuery):
-    data = sql_parse_users(f"select id,name,phone from user_table where approved = '0'")
+    Db = database.Database()
+    data = Db.sql_parse_users("select id,name,phone from user_table where approved = '0'")
+    # data = Db.sql_parse_users("select id,name,phone from user_table where approved = '0'")
     index = int(call.message.reply_markup.inline_keyboard[1][1].text.split("/")[0])-1
-    print(index)
-    #
+    # print(index)
+
 
     if len(data) == 1:
         user_id = data[index]['ID']
-        sql_query_send(f"UPDATE booking.user_table SET approved='1' WHERE id={user_id}")
+        Db.sql_query_send(f"UPDATE booking.user_table SET approved='1' WHERE id={user_id}")
         await call.message.delete()
         await call.message.answer('Заявки на регистрацию отсутствуют')
     elif index == 0:
         user_id = data[index]['ID']
-        sql_query_send(f"UPDATE booking.user_table SET approved='1' WHERE id={user_id}")
+        Db.sql_query_send(f"UPDATE booking.user_table SET approved='1' WHERE id={user_id}")
         await call.message.edit_text(beauty_reg_request(data[index+1]),
                                      reply_markup=user_manage_kb(f"accept:{user_id}",
                                                                  f"deny:{user_id}",
@@ -76,7 +81,7 @@ async def accept_user(call: types.CallbackQuery):
                                                                  f"{index+1}/{len(data) - 1}"))
     elif index == len(data)-1:
         user_id = data[index]['ID']
-        sql_query_send(f"UPDATE booking.user_table SET approved='1' WHERE id={user_id}")
+        Db.sql_query_send(f"UPDATE booking.user_table SET approved='1' WHERE id={user_id}")
         await call.message.edit_text(beauty_reg_request(data[index-1]),
                                      reply_markup=user_manage_kb(f"accept:{user_id}",
                                                                  f"deny:{user_id}",
@@ -85,7 +90,7 @@ async def accept_user(call: types.CallbackQuery):
                                                                  f"{index}/{len(data) - 1}"))
     else:
         user_id = data[index]['ID']
-        sql_query_send(f"UPDATE booking.user_table SET approved='1' WHERE id={user_id}")
+        Db.sql_query_send(f"UPDATE booking.user_table SET approved='1' WHERE id={user_id}")
         await call.message.edit_text(beauty_reg_request(data[index-1]),
                                      reply_markup=user_manage_kb(f"accept:{user_id}",
                                                                  f"deny:{user_id}",

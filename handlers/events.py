@@ -1,12 +1,13 @@
 from aiogram import types, Dispatcher
-from database import sql_check_user, sql_simple_check
+import database
 from keyboards import register_kb, make_calendar
 from functions import make_date
 
 
 async def make_event(message: types.message):
-    if not sql_check_user(f"select tg_id from user_table where tg_id ={message.from_user.id}") or \
-            not sql_simple_check(f"select approved from user_table where tg_id={message.from_user.id}", "approved"):
+    Db = database.Database()
+    if not Db.sql_simple_check(f"select tg_id from user_table where tg_id ={message.from_user.id}") or \
+            not Db.sql_simple_check(f"select approved from user_table where tg_id={message.from_user.id}"):
         await message.delete()
         await message.answer("Команды станут доступны после регистрации", reply_markup=register_kb)
     else:
@@ -17,8 +18,8 @@ async def make_event(message: types.message):
                                  f"Так же календарь мероприятий можно посмотреть в "
                                  f"<a href=moodle.tomtit.tomsk.ru>Moodle</a>\n\n"
                                  f"Сегодняшняя дата <b>{make_date()}</b>", reply_markup=make_calendar())
-            msg = await message.answer("asd")
-            print(msg)
+            # msg = await message.answer("asd")
+            # print(msg)
 
 
 async def select_date(call: types.CallbackQuery):
