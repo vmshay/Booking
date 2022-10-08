@@ -60,7 +60,7 @@ def make_calendar():
     keyboard = InlineKeyboardMarkup(row_width=7)
     button_today = InlineKeyboardButton(text="Сегодня", callback_data="today")
     button_tomorrow = InlineKeyboardButton(text="Завтра", callback_data="tomorrow")
-    button_after_tomorrow = InlineKeyboardButton(text="Послезавтра",callback_data="after_tomorrow")
+    button_after_tomorrow = InlineKeyboardButton(text="Послезавтра", callback_data="after_tomorrow")
 
     for i in range(1, days_in_month+1, 1):
         date_i = InlineKeyboardButton(text=str(i), callback_data=f"date_{str(i)}.{str(month)}")

@@ -1,6 +1,6 @@
 from aiogram import types, Dispatcher
-from keyboards import register_kb, main_kb, admin_keyboard
-import database
+from bot.keyboards import register_kb, main_kb, admin_keyboard
+from bot import database
 
 
 async def enter_admin_menu(message: types.message):

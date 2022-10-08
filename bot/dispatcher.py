@@ -1,6 +1,6 @@
 from aiogram import Bot
 from aiogram.dispatcher import Dispatcher
-from config import BOT_TOKEN
+from bot.config import BOT_TOKEN
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
 

@@ -1,7 +1,7 @@
-import database
+from bot import database
 from aiogram import types, Dispatcher
-from functions import beauty_reg_request
-from keyboards import user_manage_kb
+from bot.functions import beauty_reg_request
+from bot.keyboards import user_manage_kb
 
 
 async def list_users(message: types.Message):

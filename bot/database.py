@@ -1,5 +1,5 @@
 import mysql.connector
-import config as conf
+from bot import config as conf
 
 
 class Database:

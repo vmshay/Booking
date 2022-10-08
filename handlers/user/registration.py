@@ -1,9 +1,9 @@
 from aiogram import types, Dispatcher
-from states import RegisterStates
-from functions import validate_fio, validate_phone, reject_latin, reject_cmd
+from handlers.user.states import RegisterStates
+from bot.functions import validate_fio, validate_phone, reject_latin, reject_cmd
 from aiogram.dispatcher.storage import FSMContext
-from keyboards import reset_register_kb, register_kb, main_kb, check_register_kb
-import database
+from bot.keyboards import reset_register_kb, register_kb, main_kb, check_register_kb
+from bot import database
 
 
 async def registration(message: types.Message):

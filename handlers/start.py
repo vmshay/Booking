@@ -1,6 +1,6 @@
 from aiogram import types, Dispatcher
-from keyboards import main_kb, register_kb,   check_register_kb
-import database
+from bot.keyboards import main_kb, register_kb,   check_register_kb
+from bot import database
 
 
 # @dp.message_handler(commands=['start'])

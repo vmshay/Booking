@@ -1,7 +1,7 @@
 from aiogram import types, Dispatcher
-import database
-from keyboards import register_kb, make_calendar
-from functions import make_date
+from bot import database
+from bot.keyboards import register_kb, make_calendar
+from bot.functions import make_date
 
 
 async def make_event(message: types.message):
@@ -18,8 +18,6 @@ async def make_event(message: types.message):
                                  f"Так же календарь мероприятий можно посмотреть в "
                                  f"<a href=moodle.tomtit.tomsk.ru>Moodle</a>\n\n"
                                  f"Сегодняшняя дата <b>{make_date()}</b>", reply_markup=make_calendar())
-            # msg = await message.answer("asd")
-            # print(msg)
 
 
 async def select_date(call: types.CallbackQuery):
