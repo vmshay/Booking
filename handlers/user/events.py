@@ -25,11 +25,19 @@ async def select_date(call: types.CallbackQuery):
 
 
 async def my_events(message: types.Message):
-    await message.answer("")
+    Db = database.Database()
+    if not Db.sql_simple_check(sql=f"select tg_id from user_table where tg_id ={message.from_user.id}") or \
+            not Db.sql_simple_check(sql=f"select approved from user_table where tg_id={message.from_user.id}"):
+        await message.delete()
+        await message.answer("Команды станут доступны после регистрации", reply_markup=register_kb)
 
 
 async def all_events(message: types.Message):
-    await message.answer("")
+    Db = database.Database()
+    if not Db.sql_simple_check(sql=f"select tg_id from user_table where tg_id ={message.from_user.id}") or \
+            not Db.sql_simple_check(sql=f"select approved from user_table where tg_id={message.from_user.id}"):
+        await message.delete()
+        await message.answer("Команды станут доступны после регистрации", reply_markup=register_kb)
 
 
 def events_register(dp: Dispatcher):
