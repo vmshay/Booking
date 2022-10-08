@@ -48,7 +48,6 @@ def validate_time():
 
 
 def beauty_reg_request(data):
-
     result = (f"ФИО: {data['ФИО']}\n"
               f"Контакт: {data['Номер телефона']}")
 
@@ -58,4 +57,3 @@ def beauty_reg_request(data):
 def make_date():
     today = datetime.datetime.now()
     return datetime.datetime.strftime(today, '%d.%m.%Y')
-

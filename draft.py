@@ -20,8 +20,6 @@
 #     persons = State()
 
 
-
-
 # async def user_manage(message: types.Message):
 #     if not sql_check_user(f"select tg_id from user_table where tg_id ={message.from_user.id}") or \
 #             not sql_simple_check(f"select approved from user_table where tg_id={message.from_user.id}", "approved"):
@@ -37,7 +35,9 @@
 #         else:
 #             data = sql_parse_users(f"select id,name,phone from user_table where approved = '0'")
 #             await message.answer(f"Заявки на регистрацию")
-#             await message.answer(" ".join(sql_parse_users(f"select id,name,phone from user_table where approved = '0'")))
+#            await message.answer(" ".join(sql_parse_users(f"select id,name,phone"
+#                                                          f"from user_table"
+#                                                          f"where approved = '0'")))
 #             await message.answer(''.join(data[:1]), reply_markup=kb_user_manage())
 
 

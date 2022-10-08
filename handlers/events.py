@@ -1,6 +1,6 @@
 from aiogram import types, Dispatcher
-from database import sql_check_user,sql_simple_check
-from keyboards import register_kb,make_calendar
+from database import sql_check_user, sql_simple_check
+from keyboards import register_kb, make_calendar
 from functions import make_date
 
 
@@ -26,11 +26,11 @@ async def select_date(call: types.CallbackQuery):
 
 
 async def my_events(message: types.Message):
-    pass
+    await message.answer("")
 
 
 async def all_events(message: types.Message):
-    pass
+    await message.answer("")
 
 
 def events_register(dp: Dispatcher):

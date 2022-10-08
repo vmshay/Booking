@@ -1,6 +1,5 @@
 from aiogram import types, Dispatcher
-from dispatcher import bot
-from keyboards import main_kb, register_kb, make_calendar, admin_keyboard, check_register_kb
+from keyboards import main_kb, register_kb,   check_register_kb
 from database import sql_check_user, sql_simple_check
 
 
@@ -11,7 +10,7 @@ async def start_cmd(message: types.Message):
         await message.answer(f"🤖Вас приветствует лакей ТТИТ🤖\n\n"
                              "Для доступа к функциям нужно пройти простую регистрацию\n",
                              reply_markup=register_kb)
-    elif not sql_simple_check(f"select approved from user_table where tg_id={message.from_user.id}", "approved"):
+    elif not sql_simple_check(f'select approved from user_table where tg_id={message.from_user.id}', "approved"):
         await message.answer(f"Ваша заявка находится на рассмотрернии", reply_markup=check_register_kb)
     else:
         await message.answer(f"🤖Вас приветствует лакей ТТИТ🤖\n"

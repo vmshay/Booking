@@ -3,10 +3,10 @@ import config as conf
 
 
 def sql_check_user(db_query):
-    conn = connect(host=conf.db_host,
-                   user=conf.db_user,
-                   password=conf.db_password,
-                   database=conf.db_name)
+    conn = connect(host=conf.DB_HOST,
+                   user=conf.DB_USER,
+                   password=conf.DB_PASS,
+                   database=conf.DB_NAME)
 
     cursor = conn.cursor()
     cursor.execute(db_query)
@@ -18,10 +18,10 @@ def sql_check_user(db_query):
 
 
 def sql_simple_check(db_query, field):
-    conn = connect(host=conf.db_host,
-                   user=conf.db_user,
-                   password=conf.db_password,
-                   database=conf.db_name)
+    conn = connect(host=conf.DB_HOST,
+                   user=conf.DB_USER,
+                   password=conf.DB_PASS,
+                   database=conf.DB_NAME)
 
     cursor = conn.cursor(dictionary=True)
     cursor.execute(db_query)
@@ -33,10 +33,10 @@ def sql_simple_check(db_query, field):
 
 
 def sql_parse_users(db_query):
-    conn = connect(host=conf.db_host,
-                   user=conf.db_user,
-                   password=conf.db_password,
-                   database=conf.db_name)
+    conn = connect(host=conf.DB_HOST,
+                   user=conf.DB_USER,
+                   password=conf.DB_PASS,
+                   database=conf.DB_NAME)
     cursor = conn.cursor(dictionary=True)
     cursor.execute(db_query)
     result_set = cursor.fetchall()
@@ -54,10 +54,10 @@ def sql_parse_users(db_query):
 
 
 def sql_query_send(db_query):
-    conn = connect(host=conf.db_host,
-                   user=conf.db_user,
-                   password=conf.db_password,
-                   database=conf.db_name)
+    conn = connect(host=conf.DB_HOST,
+                   user=conf.DB_USER,
+                   password=conf.DB_PASS,
+                   database=conf.DB_NAME)
 
     cursor = conn.cursor()
     cursor.execute(db_query)
