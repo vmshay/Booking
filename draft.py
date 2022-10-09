@@ -24,10 +24,4 @@
 #     await bot.answer_callback_query(call.id)
 #     await bot.send_message(call.message.chat.id, "Вы выбрали " + call.data)
 
-# sql_query_users(f"select name,phone from user_table where approved = '0'")
-# print(sql_simple_check(f"select approved from user_table where tg_id='338836490'"))
-# print(sql_parse_users(f"select id, name,phone from user_table where approved = '0'"))
-# print(sql_simple_check(f"select admin from user_table where tg_id = '338836490'", "admin"))
-# print(not not sql_query_single_get(f"select tg_id from user_table where tg_id = '11'"))
-# sql_query(f"INSERT INTO user_table (tg_id,name,phone) VALUES ('123123','ФФ ыв ывыв','89539299323')")
-# select name,phone from user_table where approved = '0'
+

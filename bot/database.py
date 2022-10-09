@@ -53,7 +53,33 @@ class Database:
                 users_list.append(users_data)
             return users_list
 
-    def sql_query_send(self, sql):
+    def sql_parse_user_events(self, sql: str):
+        self.execute(sql)
+        result_set = self.fetchall()
+        events_list = []
+        if len(result_set) == 0:
+            return False
+        elif len(result_set) > 0:
+            for row in result_set:
+                event_data = {"desc": row['description'],
+                              "date": row['date']}
+                events_list.append(event_data)
+            return events_list
+
+    def sql_parse_all_events(self, sql: str):
+        self.execute(sql)
+        result_set = self.fetchall()
+        events_list = []
+        if len(result_set) == 0:
+            return False
+        elif len(result_set) > 0:
+            for row in result_set:
+                event_data = {"Описание": row['description'],
+                              "Инициатор": row['name']}
+                events_list.append(event_data)
+            return events_list
+
+    def sql_query_send(self, sql: str):
         self.execute(sql)
         self.commit()
         self.close()
@@ -61,5 +87,6 @@ class Database:
 
 # Db = Database()
 # data = Db.sql_simple_check("select tg_id from user_table where tg_id = 338836490 and approved = 0")
+# data = Db.sql_simple_check(simple_select(columns="tg_id", table="user_table", tg_id='338836490', approved='0'))
 # print(data)
 

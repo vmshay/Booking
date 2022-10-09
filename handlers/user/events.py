@@ -30,6 +30,11 @@ async def my_events(message: types.Message):
             not Db.sql_simple_check(sql=f"select approved from user_table where tg_id={message.from_user.id}"):
         await message.delete()
         await message.answer("Команды станут доступны после регистрации", reply_markup=register_kb)
+    else:
+        events = Db.sql_parse_user_events(f"select description,`date` from events_table WHERE owner ={message.from_user.id}")
+        await message.answer("Список событий которые Вы запланировали")
+        for event in events:
+            await message.answer(event)
 
 
 async def all_events(message: types.Message):
@@ -38,6 +43,11 @@ async def all_events(message: types.Message):
             not Db.sql_simple_check(sql=f"select approved from user_table where tg_id={message.from_user.id}"):
         await message.delete()
         await message.answer("Команды станут доступны после регистрации", reply_markup=register_kb)
+    else:
+        events = Db.sql_parse_all_events(f"select events_table.description, user_table.name from events_table inner join user_table on events_table.owner = user_table.tg_id")
+        await message.answer("Список всех событий")
+        for event in events:
+            await message.answer(event)
 
 
 def events_register(dp: Dispatcher):
