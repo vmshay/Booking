@@ -54,6 +54,13 @@ def beauty_reg_request(data):
     return result
 
 
+def beauty_all_events(data):
+    result = (f"Инициатор : {data['Инициатор']}\n"
+              f"Событие : {data['Описание']}\n"
+              f"Дата: {data['Дата']}")
+    return result
+
+
 def make_date():
     today = datetime.datetime.now()
     return datetime.datetime.strftime(today, '%d.%m.%Y')

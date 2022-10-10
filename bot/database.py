@@ -47,9 +47,7 @@ class Database:
             return False
         elif len(result_set) > 0:
             for row in result_set:
-                users_data = {"ID": row['id'],
-                              "ФИО": row['name'],
-                              "Номер телефона": row['phone']}
+                users_data = {"ID": row['id'], "ФИО": row['name'], "Номер телефона": row['phone']}
                 users_list.append(users_data)
             return users_list
 
@@ -61,8 +59,7 @@ class Database:
             return False
         elif len(result_set) > 0:
             for row in result_set:
-                event_data = {"desc": row['description'],
-                              "date": row['date']}
+                event_data = {"desc": row['description'], "date": row['date']}
                 events_list.append(event_data)
             return events_list
 
@@ -75,7 +72,8 @@ class Database:
         elif len(result_set) > 0:
             for row in result_set:
                 event_data = {"Описание": row['description'],
-                              "Инициатор": row['name']}
+                              "Инициатор": row['name'],
+                              "Дата": row['dat']}
                 events_list.append(event_data)
             return events_list
 
