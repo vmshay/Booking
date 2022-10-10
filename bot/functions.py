@@ -1,6 +1,7 @@
 import phonenumbers
 import re
 import datetime
+from datetime import date, timedelta
 
 
 def validate_phone(number):
@@ -55,12 +56,39 @@ def beauty_reg_request(data):
 
 
 def beauty_all_events(data):
-    result = (f"Инициатор : {data['Инициатор']}\n"
-              f"Событие : {data['Описание']}\n"
-              f"Дата: {data['Дата']}")
+    result = (f"Инициатор:\n{data['Инициатор']}\n\n"
+              f"Событие:\n{data['Описание']}\n\n"
+              f"Дата:\n{data['Дата']}")
     return result
 
 
 def make_date():
     today = datetime.datetime.now()
     return datetime.datetime.strftime(today, '%d.%m.%Y')
+
+
+def date_range(range):
+    today = date.today()
+    weekday = today.weekday()
+    days_per_month = {1: 31, 2: 28, 3: 30, 4: 31, 5: 30, 6: 31,
+                      7: 31, 8: 31, 9: 30, 10: 31, 11: 30, 12: 31}
+    if range == "today":
+        return f"{today}"
+
+    if range == "week":
+        first = today - timedelta(days=weekday)
+        # upper bound
+        last = today + timedelta(days=(6 - weekday))
+        return f"{first} {last}"
+
+    if range == "month":
+        first = today.replace(day=1)
+        # вторая дата
+        try:
+            last = today.replace(day=days_per_month[today.month])
+        except ValueError:
+            if today.month == 2:  # Not a leap year
+                last = today.replace(day=28)
+            else:
+                raise
+        return f"{first}  {last}"

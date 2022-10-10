@@ -12,3 +12,8 @@ class BookingState(StatesGroup):
     description = State()
     group = State()
     persons = State()
+
+
+class DateRangeState(StatesGroup):
+    date = State()
+

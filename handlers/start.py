@@ -5,13 +5,13 @@ from bot import database
 
 # @dp.message_handler(commands=['start'])
 async def start_cmd(message: types.Message):
-    Db = database.Database()
+    db = database.Database()
     await message.delete()
-    if not Db.sql_simple_check(f"select tg_id from user_table where tg_id ={message.from_user.id}"):
+    if not db.sql_simple_check(f"select tg_id from user_table where tg_id ={message.from_user.id}"):
         await message.answer(f"🤖Вас приветствует лакей ТТИТ🤖\n\n"
                              "Для доступа к функциям нужно пройти простую регистрацию\n",
                              reply_markup=register_kb)
-    elif not Db.sql_simple_check(f"select approved from user_table where tg_id={message.from_user.id}"):
+    elif not db.sql_simple_check(f"select approved from user_table where tg_id={message.from_user.id}"):
         await message.answer(f"Ваша заявка находится на рассмотрернии", reply_markup=check_register_kb)
     else:
         await message.answer(f"🤖Вас приветствует лакей ТТИТ🤖\n"

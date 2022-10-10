@@ -59,7 +59,7 @@ class Database:
             return False
         elif len(result_set) > 0:
             for row in result_set:
-                event_data = {"desc": row['description'], "date": row['date']}
+                event_data = f"Описание {row['description']}\n Дата {row['dat']}"
                 events_list.append(event_data)
             return events_list
 
@@ -83,7 +83,7 @@ class Database:
         self.close()
 
 
-# Db = Database()
+db = Database()
 # data = Db.sql_simple_check("select tg_id from user_table where tg_id = 338836490 and approved = 0")
 # data = Db.sql_simple_check(simple_select(columns="tg_id", table="user_table", tg_id='338836490', approved='0'))
 # print(data)

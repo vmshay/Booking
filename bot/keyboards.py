@@ -5,7 +5,7 @@ import datetime
 
 # Основная
 button_bind = KeyboardButton('🎯 Запланировать мероприятие')
-button_my = KeyboardButton('🗒 ️Мои события')
+button_my = KeyboardButton('🗒 Мои события')
 button_all = KeyboardButton('📅 Все события')
 button_config = KeyboardButton("👮 Управление")
 main_kb = ReplyKeyboardMarkup(resize_keyboard=True)
@@ -51,6 +51,14 @@ def user_manage_kb(b_accept, b_deny, b_next, b_prev, b_count):
     keyboard.add(prev_button, count_button, next_button)
     return keyboard
 
+
+def events_range_kb():
+    keyboard = InlineKeyboardMarkup()
+    today_button = InlineKeyboardButton(text="Сегодня",callback_data="today")
+    week_button = InlineKeyboardButton(text="Эта неделя", callback_data="week")
+    month_button = InlineKeyboardButton(text="Текущий месяц",callback_data="month")
+    keyboard.add(today_button,week_button,month_button)
+    return keyboard
 
 # Генератор календаря
 def make_calendar():
