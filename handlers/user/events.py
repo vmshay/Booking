@@ -3,6 +3,7 @@ from bot import database
 from bot.keyboards import register_kb, make_calendar, events_range_kb
 from bot.functions import make_date, date_range, beauty_all_events
 
+
 async def make_event(message: types.message):
     db = database.Database()
     if not db.sql_simple_check(f"select tg_id from user_table where tg_id ={message.from_user.id}") or \
@@ -25,7 +26,9 @@ async def select_date(call: types.CallbackQuery):
 
 async def my_events(message: types.Message):
     db = database.Database()
-    if not db.sql_simple_check(sql=f"select tg_id from user_table where tg_id ={message.from_user.id}") or \
+    if db.sql_simple_check(sql=f'select admin from user_table where tg_id = {message.from_user.id}') == "0":
+        await message.answer("В разработке")
+    elif not db.sql_simple_check(sql=f"select tg_id from user_table where tg_id ={message.from_user.id}") or \
             not db.sql_simple_check(sql=f"select approved from user_table where tg_id={message.from_user.id}"):
         await message.delete()
         await message.answer("Команды станут доступны после регистрации", reply_markup=register_kb)
@@ -40,7 +43,9 @@ async def my_events(message: types.Message):
 
 async def all_events(message: types.Message):
     db = database.Database()
-    if not db.sql_simple_check(sql=f"select tg_id from user_table where tg_id ={message.from_user.id}") or \
+    if db.sql_simple_check(sql=f'select admin from user_table where tg_id = {message.from_user.id}') == "0":
+        await message.answer("В разработке")
+    elif not db.sql_simple_check(sql=f"select tg_id from user_table where tg_id ={message.from_user.id}") or \
             not db.sql_simple_check(sql=f"select approved from user_table where tg_id={message.from_user.id}"):
         await message.delete()
         await message.answer("Команды станут доступны после регистрации", reply_markup=register_kb)

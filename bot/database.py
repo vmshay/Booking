@@ -84,6 +84,7 @@ class Database:
 
 
 db = Database()
+print(db.sql_simple_check(sql=f'select admin from user_table where tg_id = 338836490'))
 # data = Db.sql_simple_check("select tg_id from user_table where tg_id = 338836490 and approved = 0")
 # data = Db.sql_simple_check(simple_select(columns="tg_id", table="user_table", tg_id='338836490', approved='0'))
 # print(data)
