@@ -54,9 +54,9 @@ def user_manage_kb(b_accept, b_deny, b_next, b_prev, b_count):
 
 def events_range_kb():
     keyboard = InlineKeyboardMarkup()
-    today_button = InlineKeyboardButton(text="Сегодня",callback_data="today")
-    week_button = InlineKeyboardButton(text="Эта неделя", callback_data="week")
-    month_button = InlineKeyboardButton(text="Текущий месяц",callback_data="month")
+    today_button = InlineKeyboardButton(text="За сегодня",callback_data="today")
+    week_button = InlineKeyboardButton(text="За неделю", callback_data="week")
+    month_button = InlineKeyboardButton(text="За месяц", callback_data="month")
     keyboard.add(today_button,week_button,month_button)
     return keyboard
 
@@ -71,7 +71,7 @@ def make_calendar():
     button_after_tomorrow = InlineKeyboardButton(text="Послезавтра", callback_data="after_tomorrow")
 
     for i in range(1, days_in_month+1, 1):
-        date_i = InlineKeyboardButton(text=str(i), callback_data=f"date_{str(i)}.{str(month)}")
+        date_i = InlineKeyboardButton(text=str(i), callback_data=f"date_2022-{str(month)}-{str(i)}")
         keyboard.insert(date_i)
     keyboard.add(button_today, button_tomorrow, button_after_tomorrow)
     return keyboard
