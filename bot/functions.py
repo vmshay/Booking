@@ -56,9 +56,11 @@ def beauty_reg_request(data):
 
 
 def beauty_all_events(data):
-    result = (f"Инициатор:\n{data['Инициатор']}\n\n"
+    result = (f"******************\n"
+              f"Инициатор:\n{data['Инициатор']}\n\n"
               f"Событие:\n{data['Описание']}\n\n"
-              f"Дата:\n{data['Дата']}")
+              f"Дата:\n{data['Дата']}\n\n"
+              )
     return result
 
 
@@ -73,13 +75,13 @@ def date_range(range):
     days_per_month = {1: 31, 2: 28, 3: 30, 4: 31, 5: 30, 6: 31,
                       7: 31, 8: 31, 9: 30, 10: 31, 11: 30, 12: 31}
     if range == "today":
-        return f"{today}"
+        return today
 
     if range == "week":
         first = today - timedelta(days=weekday)
         # upper bound
         last = today + timedelta(days=(6 - weekday))
-        return f"{first} {last}"
+        return f"{first} and {last}"
 
     if range == "month":
         first = today.replace(day=1)
@@ -91,4 +93,4 @@ def date_range(range):
                 last = today.replace(day=28)
             else:
                 raise
-        return f"{first}  {last}"
+        return f"{first} and {last}"

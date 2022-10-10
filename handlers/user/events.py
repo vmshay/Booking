@@ -1,8 +1,7 @@
 from aiogram import types, Dispatcher
 from bot import database
 from bot.keyboards import register_kb, make_calendar, events_range_kb
-from bot.functions import make_date, date_range
-
+from bot.functions import make_date, date_range, beauty_all_events
 
 async def make_event(message: types.message):
     db = database.Database()
@@ -21,6 +20,7 @@ async def make_event(message: types.message):
 
 async def select_date(call: types.CallbackQuery):
     await call.message.answer(call.data)
+    # TODO: Планирование по дате
 
 
 async def my_events(message: types.Message):
@@ -49,20 +49,23 @@ async def all_events(message: types.Message):
 
 
 async def select_range(call: types.CallbackQuery):
+    db = database.Database()
     if call.data == "today":
         await call.message.answer(date_range(call.data))
+        tim = str(date_range("today"))
+        tim = "'"+tim+"'"
+        data1 = db.sql_parse_all_events(sql=f"select events_table.description, user_table.name, events_table.dat "
+                                           f"from events_table inner join user_table "
+                                           f"on events_table.owner = user_table.tg_id "
+                                           f"where events_table.dat={tim}")
+        msg = ""
+        for elem in data1:
+            msg += "".join(beauty_all_events(elem))
+        await call.message.answer(msg)
     if call.data == "week":
         await call.message.answer(date_range(call.data))
     if call.data == "month":
         await call.message.answer(date_range(call.data))
-
-
-        # events = db.sql_parse_all_events(f"select events_table.description, user_table.name, events_table.dat from events_table inner join user_table on events_table.owner = user_table.tg_id")
-
-
-#        await message.answer("Список всех событий")
-#        for event in events:
-#           await message.answer(beauty_all_events(event))
 
 
 def events_register(dp: Dispatcher):

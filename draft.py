@@ -24,4 +24,9 @@
 #     await bot.answer_callback_query(call.id)
 #     await bot.send_message(call.message.chat.id, "Вы выбрали " + call.data)
 
+        # events = db.sql_parse_all_events(f"select events_table.description, user_table.name, events_table.dat from events_table inner join user_table on events_table.owner = user_table.tg_id")
 
+
+#        await message.answer("Список всех событий")
+#        for event in events:
+#           await message.answer(beauty_all_events(event))
