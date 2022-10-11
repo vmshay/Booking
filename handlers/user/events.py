@@ -50,23 +50,27 @@ async def all_events(message: types.Message):
         await message.delete()
         await message.answer("Команды станут доступны после регистрации", reply_markup=register_kb)
     else:
-        await message.answer("Укажите диапазон дат или выберите кнопкой", reply_markup=events_range_kb())
+        await message.answer("Выберете интересующий диапазон", reply_markup=events_range_kb())
 
 
 async def select_range(call: types.CallbackQuery):
     db = database.Database()
     if call.data == "today":
-        await call.message.answer(date_range(call.data))
-        tim = str(date_range("today"))
-        tim = "'"+tim+"'"
-        data1 = db.sql_parse_all_events(sql=f"select events_table.description, user_table.name, events_table.dat "
+        time = "'"+str(date_range("today"))+"'"
+        data = db.sql_fetchall(sql=f"select events_table.description, user_table.name, events_table.dat "
                                            f"from events_table inner join user_table "
                                            f"on events_table.owner = user_table.tg_id "
-                                           f"where events_table.dat={tim}")
-        msg = ""
-        for elem in data1:
-            msg += "".join(beauty_all_events(elem))
-        await call.message.answer(msg)
+                                           f"where events_table.dat={time}")
+        print(data)
+
+        if data == 0:
+            await call.message.answer("Сегодня меротприятий нет")
+        else:
+            pass
+            # msg = ""
+            # for elem in data:
+            #     msg += "".join(beauty_all_events(elem))
+            # await call.message.answer(msg)
     if call.data == "week":
         await call.message.answer(date_range(call.data))
     if call.data == "month":

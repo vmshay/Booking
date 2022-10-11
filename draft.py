@@ -30,3 +30,26 @@
 #        await message.answer("Список всех событий")
 #        for event in events:
 #           await message.answer(beauty_all_events(event))
+
+#
+# def sql_fetchone(self, sql: str):
+#     self.execute(sql)
+#     response = self.fetchone()
+#     if response is None:
+#         return False
+#     else:
+#         for v in response.values():
+#             return v
+#
+#
+# def sql_parse_users(self, sql: str):
+#     self.execute(sql)
+#     result_set = self.fetchall()
+#     users_list = []
+#     if len(result_set) == 0:
+#         return False
+#     elif len(result_set) > 0:
+#         for row in result_set:
+#             users_data = {"ID": row['id'], "ФИО": row['name'], "Номер телефона": row['phone']}
+#             users_list.append(users_data)
+#         return users_list

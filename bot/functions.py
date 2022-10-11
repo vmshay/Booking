@@ -94,3 +94,22 @@ def date_range(range):
             else:
                 raise
         return f"{first} and {last}"
+
+
+def get_all_events(data):
+    pass
+
+
+
+    #
+    # def sql_parse_user_events(self, sql: str):
+    #     self.execute(sql)
+    #     result_set = self.fetchall()
+    #     events_list = []
+    #     if len(result_set) == 0:
+    #         return False
+    #     elif len(result_set) > 0:
+    #         for row in result_set:
+    #             event_data = f"Описание {row['description']}\n Дата {row['dat']}"
+    #             events_list.append(event_data)
+    #         return events_list

@@ -63,19 +63,19 @@ class Database:
                 events_list.append(event_data)
             return events_list
 
-    def sql_parse_all_events(self, sql: str):
+    def sql_fetchall(self, sql: str):
         self.execute(sql)
         result_set = self.fetchall()
         events_list = []
-        if len(result_set) == 0:
-            return False
-        elif len(result_set) > 0:
-            for row in result_set:
-                event_data = {"Описание": row['description'],
-                              "Инициатор": row['name'],
-                              "Дата": row['dat']}
-                events_list.append(event_data)
-            return events_list
+        # if len(result_set) == 0:
+        #     return False
+        # if len(result_set) > 0:
+        #     for row in result_set:
+        #         event_data = {"Описание": row['description'],
+        #                       "Инициатор": row['name'],
+        #                       "Дата": row['dat']}
+        #         events_list.append(event_data)
+        return result_set
 
     def sql_query_send(self, sql: str):
         self.execute(sql)
@@ -83,9 +83,11 @@ class Database:
         self.close()
 
 
-db = Database()
-print(db.sql_simple_check(sql=f'select admin from user_table where tg_id = 338836490'))
-# data = Db.sql_simple_check("select tg_id from user_table where tg_id = 338836490 and approved = 0")
-# data = Db.sql_simple_check(simple_select(columns="tg_id", table="user_table", tg_id='338836490', approved='0'))
-# print(data)
+# databas = Database()
+# # # print(db.sql_simple_check(sql=f'select admin from user_table where tg_id = 338836490'))
+# # # data = Db.sql_simple_check("select tg_id from user_table where tg_id = 338836490 and approved = 0")
+# dat = databas.sql_fetchall(sql=f"select events_table.description, user_table.name, events_table.dat "
+#                                             f"from events_table inner join user_table "
+#                                             f"on events_table.owner = user_table.tg_id ")
+# print(dat)
 
