@@ -33,12 +33,7 @@ async def my_events(message: types.Message):
         await message.delete()
         await message.answer("Команды станут доступны после регистрации", reply_markup=register_kb)
     else:
-        events = db.sql_parse_user_events(
-            f"select description,`dat` from events_table WHERE owner = {message.from_user.id}")
         await message.answer("Список событий которые Вы запланировали")
-        for event in events:
-            await message.answer(event)
-            # await message.answer(beauty_all_events(event))
 
 
 async def all_events(message: types.Message):
@@ -57,24 +52,37 @@ async def select_range(call: types.CallbackQuery):
     db = database.Database()
     if call.data == "today":
         time = "'"+str(date_range("today"))+"'"
-        data = db.sql_fetchall(sql=f"select events_table.description, user_table.name, events_table.dat "
+        data = db.sql_fetchall(sql=f"select events_table.description, user_table.name, events_table.e_date "
                                            f"from events_table inner join user_table "
                                            f"on events_table.owner = user_table.tg_id "
-                                           f"where events_table.dat={time}")
-        print(data)
+                                           f"where events_table.e_date={time}")
 
         if data == 0:
             await call.message.answer("Сегодня меротприятий нет")
         else:
-            pass
-            # msg = ""
-            # for elem in data:
-            #     msg += "".join(beauty_all_events(elem))
-            # await call.message.answer(msg)
+            await call.message.answer(data)
     if call.data == "week":
-        await call.message.answer(date_range(call.data))
+        time = date_range("week").split(" ")
+        time = "'" + time[0] + "' " + time[1] + " '" + time[2] + "'"
+        print(time)
+        data = db.sql_fetchall(sql=f"select events_table.description, user_table.name, events_table.e_date "
+                                           f"from events_table inner join user_table "
+                                           f"on events_table.owner = user_table.tg_id "
+                                           f"where events_table.e_date between {time}")
+
+        await call.message.answer(data)
     if call.data == "month":
-        await call.message.answer(date_range(call.data))
+        time = date_range("week").split(" ")
+        time = "'" + time[0] + "' " + time[1] + " '" + time[2] + "'"
+        print(time)
+        data = db.sql_fetchall(sql=f"select events_table.description, user_table.name, events_table.e_date "
+                                   f"from events_table inner join user_table "
+                                   f"on events_table.owner = user_table.tg_id "
+                                   f"where events_table.e_date between {time}")
+        # print(data.sort())
+        for dat in data:
+            await call.message.answer(dat)
+            await call.message.answer("asd")
 
 
 def events_register(dp: Dispatcher):
