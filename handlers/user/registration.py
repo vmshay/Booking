@@ -3,15 +3,15 @@ from handlers.user.states import RegisterStates
 from bot.functions import validate_fio, validate_phone, reject_latin, reject_cmd
 from aiogram.dispatcher.storage import FSMContext
 from bot.keyboards import reset_register_kb, register_kb, main_kb, check_register_kb
-from bot import database
+from bot import database,sql
 
 
 async def registration(message: types.Message):
     db = database.Database()
     await message.delete()
-    if db.sql_simple_check(f'select tg_id from user_table where tg_id = {message.from_user.id} and approved = 0'):
+    if db.sql_fetchone(f'select tg_id from user_table where tg_id = {message.from_user.id} and approved = 0'):
         await message.answer("Ваша заявка рассматривается", reply_markup=check_register_kb)
-    elif db.sql_simple_check(f'select tg_id from user_table where tg_id = {message.from_user.id} and approved = 1'):
+    elif db.sql_fetchone(f'select tg_id from user_table where tg_id = {message.from_user.id} and approved = 1'):
         msg = await message.answer("Вы зарегистрированны", reply_markup=main_kb)
         await msg.delete()
     else:
@@ -27,6 +27,15 @@ async def registration(message: types.Message):
                              f"<b>8-999-888-11-22</b>\n"
                              f"<b>+7-999-888-11-22</b>", reply_markup=reset_register_kb)
         await RegisterStates.phone.set()
+
+
+async def check_reg_status(message: types.Message):
+    db = database.Database()
+    await message.delete()
+    if db.sql_fetchone(f'select tg_id from user_table where tg_id = {message.from_user.id} and approved = 0'):
+        await message.answer("Ваша заявка рассматривается", reply_markup=check_register_kb)
+    elif db.sql_fetchone(f'select tg_id from user_table where tg_id = {message.from_user.id} and approved = 1'):
+        await message.answer("Вы зарегистрированны", reply_markup=main_kb)
 
 
 async def get_number(message: types.Message, state: FSMContext):
@@ -57,26 +66,13 @@ async def get_fio(message: types.Message, state: FSMContext):
         await message.answer(f"Спасибо за регистрацию\n"
                              f"Вы сможете воспользоваться функциями после одобрения\n", reply_markup=check_register_kb)
 
-        db.sql_query_send(f"INSERT INTO user_table"
-                          f"(tg_id,name,phone) VALUES "
-                          f"({reg_data['id']},"
-                          f"'{reg_data['FIO']}'"
-                          f",{reg_data['number']})")
+        db.sql_query_send(sql.sql_send(reg_data))
         await state.finish()
 
 
 async def reset_register(message: types.Message, state: FSMContext):
     await state.finish()
     await message.answer("Регистрация отменена", reply_markup=register_kb)
-
-
-async def check_reg_status(message: types.Message):
-    db = database.Database()
-    await message.delete()
-    if db.sql_simple_check(f'select tg_id from user_table where tg_id = {message.from_user.id} and approved = 0'):
-        await message.answer("Ваша заявка рассматривается", reply_markup=check_register_kb)
-    elif db.sql_simple_check(f'select tg_id from user_table where tg_id = {message.from_user.id} and approved = 1'):
-        await message.answer("Вы зарегистрированны", reply_markup=main_kb)
 
 
 def register_handlers(dp: Dispatcher):

@@ -30,7 +30,7 @@ class Database:
     def execute(self, sql, params=None):
         return self.cursor.execute(sql, params or ())
 
-    def sql_simple_check(self, sql: str):
+    def sql_fetchone(self, sql: str):
         self.execute(sql)
         response = self.fetchone()
         if response is None:

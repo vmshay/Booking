@@ -6,8 +6,8 @@ from bot.keyboards import user_manage_kb,register_kb
 
 async def list_users(message: types.Message):
     db = database.Database()
-    if not db.sql_simple_check(sql=f"select tg_id from user_table where tg_id ={message.from_user.id}") or \
-            not db.sql_simple_check(sql=f"select approved from user_table where tg_id={message.from_user.id}"):
+    if not db.sql_fetchone(sql=f"select tg_id from user_table where tg_id ={message.from_user.id}") or \
+            not db.sql_fetchone(sql=f"select approved from user_table where tg_id={message.from_user.id}"):
         await message.delete()
         await message.answer("Команды станут доступны после регистрации", reply_markup=register_kb)
     if not db.sql_parse_users("select id,name,phone from user_table where approved = '0'"):

@@ -7,11 +7,11 @@ from bot import database
 async def start_cmd(message: types.Message):
     db = database.Database()
     await message.delete()
-    if not db.sql_simple_check(f"select tg_id from user_table where tg_id ={message.from_user.id}"):
+    if not db.sql_fetchone(f"select tg_id from user_table where tg_id ={message.from_user.id}"):
         await message.answer(f"🤖Вас приветствует лакей ТТИТ🤖\n\n"
                              "Для доступа к функциям нужно пройти простую регистрацию\n",
                              reply_markup=register_kb)
-    elif not db.sql_simple_check(f"select approved from user_table where tg_id={message.from_user.id}"):
+    elif not db.sql_fetchone(f"select approved from user_table where tg_id={message.from_user.id}"):
         await message.answer(f"Ваша заявка находится на рассмотрернии", reply_markup=check_register_kb)
     else:
         await message.answer(f"🤖Вас приветствует лакей ТТИТ🤖\n"
@@ -27,5 +27,10 @@ async def start_cmd(message: types.Message):
                              reply_markup=main_kb)
 
 
+async def stop_bot(message: types.Message):
+    await message.answer("Выполняется остановка бота")
+    exit(0)
+
 def main_register(dp: Dispatcher):
     dp.register_message_handler(start_cmd, commands=['start', 'help'])
+    dp.register_message_handler(stop_bot, commands=['stop'])
