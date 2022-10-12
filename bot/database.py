@@ -66,15 +66,6 @@ class Database:
     def sql_fetchall(self, sql: str):
         self.execute(sql)
         result_set = self.fetchall()
-        events_list = []
-        # if len(result_set) == 0:
-        #     return False
-        # if len(result_set) > 0:
-        #     for row in result_set:
-        #         event_data = {"Описание": row['description'],
-        #                       "Инициатор": row['name'],
-        #                       "Дата": row['dat']}
-        #         events_list.append(event_data)
         return result_set
 
     def sql_query_send(self, sql: str):
