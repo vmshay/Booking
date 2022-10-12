@@ -3,7 +3,7 @@ from handlers.user.states import RegisterStates
 from bot.functions import validate_fio, validate_phone, reject_latin, reject_cmd
 from aiogram.dispatcher.storage import FSMContext
 from bot.keyboards import reset_register_kb, register_kb, main_kb, check_register_kb
-from bot import database,sql
+from bot import database, sql
 
 
 async def registration(message: types.Message):

@@ -60,6 +60,22 @@ def events_range_kb():
     keyboard.add(today_button,week_button,month_button)
     return keyboard
 
+
+def cancel_booking():
+    keyboard = InlineKeyboardMarkup()
+    cancel_button = InlineKeyboardButton(text="Отменить бронирование",callback_data="cancel_booking")
+    keyboard.add(cancel_button)
+    return keyboard
+
+
+def events_kb():
+    keyboard = InlineKeyboardMarkup()
+    booking_button = InlineKeyboardButton(text='Забронировать',callback_data="booking")
+    back_button = InlineKeyboardButton(text='Выбрать другую дату',callback_data="change")
+    keyboard.add(back_button, booking_button)
+    return keyboard
+
+
 # Генератор календаря
 def make_calendar():
     current_date = datetime.date.today()

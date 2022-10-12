@@ -7,13 +7,8 @@ class RegisterStates(StatesGroup):
 
 
 class BookingState(StatesGroup):
-    owner = State()
+    start = State()
     time = State()
     description = State()
-    group = State()
-    persons = State()
 
-
-class DateRangeState(StatesGroup):
-    date = State()
 
