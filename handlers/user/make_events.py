@@ -18,7 +18,7 @@ async def make_event(message: types.message):
             # TODO: Добавить переход на следующий месяц
             await message.answer(f"выберите дату чтобы увидеть список мероприятий\n\n"
                                  f"Так же календарь мероприятий можно посмотреть в "
-                                 f"<a href=moodle.tomtit.tomsk.ru>Moodle</a>\n\n"
+                                 f"<a href=moodle.tomtit-tomsk.ru>Moodle</a>\n\n"
                                  f"Сегодняшняя дата <b>{make_date()}</b>", reply_markup=make_calendar())
 
 
@@ -41,30 +41,30 @@ async def edit_date(call: types.CallbackQuery, state: FSMContext):
 
     await call.message.edit_text(f"выберите дату чтобы увидеть список мероприятий\n\n"
                                  f"Так же календарь мероприятий можно посмотреть в "
-                                 f"<a href=moodle.tomtit.tomsk.ru>Moodle</a>\n\n"
+                                 f"<a href=moodle.tomtit-tomsk.ru>Moodle</a>\n\n"
                                  f"Сегодняшняя дата <b>{make_date()}</b>", reply_markup=make_calendar())
-    print("Отменено")
     await state.finish()
 
 
 async def booking_date(call: types.CallbackQuery):
     await call.message.edit_text("Введите диапазон времени\n"
-                                 "Возможные форматы\n"
+                                 "Возможные форматы\n\n"
                                  "13.00 15.30\n"
                                  "13.00-15.30\n"
                                  "13:00 15:30\n"
                                  "13.00-15.30\n", reply_markup=cancel_booking())
-    # TODO: парсер времени
     # TODO: Проверка на занятость
-
     await BookingState.time.set()
 
 
 async def get_date(message: types.Message, state: FSMContext):
     if time_validator(message.text):
+        db = database.Database()
         time = split_time(message.text)
         await state.update_data(t_start=time[0])
         await state.update_data(t_end=time[1])
+        sql_data = db.sql_fetchall(sql.sql_time_range(time))
+        print(len(sql_data))
         await message.answer("Введите краткое описание мероприятия", reply_markup=cancel_booking())
         await BookingState.description.set()
     else:
@@ -80,7 +80,7 @@ async def send_event(message: types.Message, state: FSMContext):
     data = await state.get_data()
     await message.answer("Заявка принята", reply_markup=main_kb)
     await state.finish()
-    # await message.answer(data)
+    await message.answer(data)
     db.sql_query_send(sql.sql_send_event(data))
 
 

@@ -54,7 +54,7 @@ def user_manage_kb(b_accept, b_deny, b_next, b_prev, b_count):
 
 def events_range_kb():
     keyboard = InlineKeyboardMarkup()
-    today_button = InlineKeyboardButton(text="За сегодня",callback_data="today")
+    today_button = InlineKeyboardButton(text="За сегодня", callback_data="today")
     week_button = InlineKeyboardButton(text="За неделю", callback_data="week")
     month_button = InlineKeyboardButton(text="За месяц", callback_data="month")
     keyboard.add(today_button,week_button,month_button)
@@ -63,16 +63,17 @@ def events_range_kb():
 
 def cancel_booking():
     keyboard = InlineKeyboardMarkup()
-    cancel_button = InlineKeyboardButton(text="Отменить бронирование",callback_data="cancel_booking")
+    cancel_button = InlineKeyboardButton(text="Отменить", callback_data="cancel_booking")
     keyboard.add(cancel_button)
     return keyboard
 
 
 def events_kb():
     keyboard = InlineKeyboardMarkup()
-    booking_button = InlineKeyboardButton(text='Забронировать',callback_data="booking")
-    back_button = InlineKeyboardButton(text='Выбрать другую дату',callback_data="change")
-    keyboard.add(back_button, booking_button)
+    booking_button = InlineKeyboardButton(text='Забронировать', callback_data="booking")
+    back_button = InlineKeyboardButton(text='Отменить', callback_data="change")
+    keyboard.add(back_button,booking_button)
+    # keyboard.add(booking_button)
     return keyboard
 
 

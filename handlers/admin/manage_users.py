@@ -1,7 +1,7 @@
 from bot import database
 from aiogram import types, Dispatcher
 from bot.functions import beauty_reg_request
-from bot.keyboards import user_manage_kb,register_kb
+from bot.keyboards import user_manage_kb, register_kb
 
 
 async def list_users(message: types.Message):
@@ -32,7 +32,6 @@ async def next_user_page(call: types.CallbackQuery):
     if index == len(data):
         pass
     else:
-        # print(f"next: {index}")
         user_id = data[index]['ID']
         await call.message.edit_text(beauty_reg_request(data[index]),
                                      reply_markup=user_manage_kb(f"accept:{user_id}",
@@ -103,16 +102,9 @@ async def accept_user(call: types.CallbackQuery):
                                                                  f"{index}/{len(data) - 1}"))
 
 
-async def events_manage(message: types.message):
-    await message.answer(f"Управление мероприятиями\n"
-                         f"Здесь вы можете управлять заявками мероприятий\n\n")
-
-
 # Регистрация команд
 def admin_handlers(dp: Dispatcher):
     dp.register_message_handler(list_users, text='👤 Управление пользователями')
-    dp.register_message_handler(events_manage, text='🎫 Управление мероприятиями')
-
     dp.register_callback_query_handler(next_user_page, text_startswith='next')
     dp.register_callback_query_handler(prev_user_page, text_startswith='prev')
     dp.register_callback_query_handler(accept_user, text_startswith='accept')
