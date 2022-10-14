@@ -69,23 +69,22 @@ def make_date():
     return datetime.datetime.strftime(today, '%d.%m.%Y')
 
 
-def date_range(range):
+def date_range(data):
     today = date.today()
     weekday = today.weekday()
     days_per_month = {1: 31, 2: 28, 3: 30, 4: 31, 5: 30, 6: 31,
                       7: 31, 8: 31, 9: 30, 10: 31, 11: 30, 12: 31}
-    if range == "today":
+    if data == "today":
         return today
 
-    if range == "week":
+    if data == "week":
         first = today - timedelta(days=weekday)
         # upper bound
         last = today + timedelta(days=(6 - weekday))
         return f"{first} and {last}"
 
-    if range == "month":
+    if data == "month":
         first = today.replace(day=1)
-        # вторая дата
         try:
             last = today.replace(day=days_per_month[today.month])
         except ValueError:
@@ -96,20 +95,31 @@ def date_range(range):
         return f"{first} and {last}"
 
 
-def get_all_events(data):
-    pass
+def to_quotes(data):
+    data = "'" + str(data) + "'"
+    return data
 
 
+def time_validator(data):
+    re_pattern = "^(2[0-3]|[01]?[0-9])(:|\.)([0-5]?[0-9])( |-)(2[0-3]|[01]?[0-9])(:|\.)([0-5]?[0-9])$"
+    if re.match(re_pattern, data):
+        if len(data.split(" ")) == 2:
+            return True
+        elif len(data.split("-")) == 2:
+            return True
+        else:
+            return False
+    else:
+        return False
 
-    #
-    # def sql_parse_user_events(self, sql: str):
-    #     self.execute(sql)
-    #     result_set = self.fetchall()
-    #     events_list = []
-    #     if len(result_set) == 0:
-    #         return False
-    #     elif len(result_set) > 0:
-    #         for row in result_set:
-    #             event_data = f"Описание {row['description']}\n Дата {row['dat']}"
-    #             events_list.append(event_data)
-    #         return events_list
+
+def split_time(data):
+    if len(data.split(" ")) == 2:
+        return data.split(" ")
+    elif len(data.split("-")) == 2:
+        return data.split("-")
+    else:
+        return False
+
+
+print(split_time("1.00-15.30"))

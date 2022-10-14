@@ -30,7 +30,7 @@
 #        await message.answer("Список всех событий")
 #        for event in events:
 #           await message.answer(beauty_all_events(event))
-
+# {'date': '2022-10-9', 'owner': 338836490, 't_start': '13.00', 't_end': '15.30', 'description': 'sdlf;sdlf', 'approved': 0}
 #
 # def sql_fetchone(self, sql: str):
 #     self.execute(sql)

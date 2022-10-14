@@ -66,7 +66,7 @@ async def get_fio(message: types.Message, state: FSMContext):
         await message.answer(f"Спасибо за регистрацию\n"
                              f"Вы сможете воспользоваться функциями после одобрения\n", reply_markup=check_register_kb)
 
-        db.sql_query_send(sql.sql_send(reg_data))
+        db.sql_query_send(sql.sql_send_register(reg_data))
         await state.finish()
 
 

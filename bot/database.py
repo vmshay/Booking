@@ -74,11 +74,3 @@ class Database:
         self.close()
 
 
-# databas = Database()
-# # # print(db.sql_simple_check(sql=f'select admin from user_table where tg_id = 338836490'))
-# # # data = Db.sql_simple_check("select tg_id from user_table where tg_id = 338836490 and approved = 0")
-# dat = databas.sql_fetchall(sql=f"select events_table.description, user_table.name, events_table.dat "
-#                                             f"from events_table inner join user_table "
-#                                             f"on events_table.owner = user_table.tg_id ")
-# print(dat)
-
