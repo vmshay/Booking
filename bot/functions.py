@@ -2,6 +2,7 @@ import phonenumbers
 import re
 import datetime
 from datetime import date, timedelta
+from bot.database import Database
 
 
 def validate_phone(number):
@@ -115,12 +116,36 @@ def time_validator(data):
 
 def split_time(data):
     if len(data.split(" ")) == 2:
-        return data.split(" ")
+        return data.replace(".", ":").split(" ")
     elif len(data.split("-")) == 2:
-        return data.split("-")
+        return data.replace(".", ":").split("-")
     else:
         return False
 
 
+def get_time_range(start,finish):
+    db = Database()
+    sql1 = f"SELECT Id,e_end,e_start from events_table where e_date = '2022-10-10'"
+    results = db.sql_fetchall(sql1)
+    # print(results)
+    for res in results:
+        if res['e_start'] < start and res['e_end'] > finish:
+            print(f"Внутри {res['Id']}")
+            break
+        elif res['e_start'] > start and res['e_end'] < finish:
+            print(f"Перекрывает {res['Id']}")
+            break
+        elif start < res['e_end']:
+            print(f"С конца {res['Id']}")
+            print(finish)
+            print(res['e_start'])
+        elif finish > res['e_start']:
+            print(f"С начала {res['Id']}")
+            print(finish)
+            print(res['e_start'])
 
-print(split_time("1.00-15.30"))
+# print(split_time("1.00-15.30"))
+get_time_range('12:00','13:30')
+#
+#
+# 14:00	16:30
