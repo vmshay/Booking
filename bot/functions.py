@@ -139,3 +139,19 @@ def check_overlap(start, end, date):
     for time in times:
         it.addi(time['e_start'], time['e_end'])
     return not it.overlaps(start, end)
+
+
+def parse_events(data):
+    events_list = []
+    for elem in data:
+        event = {"ID": elem['id'],
+                 "Инициатор": elem['name'],
+                 "Номер телефона": elem['phone'],
+                 "Описание": elem['description'],
+                 "Начало в": elem['e_start'],
+                 "Конец в": elem['e_end']}
+
+        events_list.append(event)
+    return events_list
+
+# [{'name': 'Шаймагсумов Вильдан Маратович', 'phone': '79539299323', 'description': 'asdasdasd', 'e_start': '13:00', 'e_end': '15:30'},

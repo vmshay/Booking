@@ -4,6 +4,12 @@ from bot.keyboards import register_kb, make_calendar, events_kb, cancel_booking,
 from bot.functions import make_date, time_validator, normalize_time, to_quotes, check_overlap
 from handlers.user.states import BookingState
 from aiogram.dispatcher.storage import FSMContext
+from bot import messages
+
+
+# TODO: Убрать вывод данных состояния
+# Добавить визуализацию занятого времени
+# Переписать реактирование сообщений
 
 
 async def make_event(message: types.message):
@@ -11,22 +17,18 @@ async def make_event(message: types.message):
     if not db.sql_fetchone(f"select tg_id from user_table where tg_id ={message.from_user.id}") or \
             not db.sql_fetchone(f"select approved from user_table where tg_id={message.from_user.id}"):
         await message.delete()
-        await message.answer("Команды станут доступны после регистрации", reply_markup=register_kb)
+        await message.answer(messages.non_register, reply_markup=register_kb)
     else:
         if message.text == "🎯 Запланировать мероприятие":
             await message.delete()
             # TODO: Добавить переход на следующий месяц
-            await message.answer(f"выберите дату чтобы увидеть список мероприятий\n\n"
-                                 f"Так же календарь мероприятий можно посмотреть в "
-                                 f"<a href=moodle.tomtit-tomsk.ru>Moodle</a>\n\n"
-                                 f"Сегодняшняя дата <b>{make_date()}</b>", reply_markup=make_calendar())
+            await message.answer(messages.events_welcome(make_date()), reply_markup=make_calendar())
 
 
 async def select_date(call: types.CallbackQuery, state: FSMContext):
     db = database.Database()
     date = call.data.split("_")[1]
-    booked = db.sql_fetchall(
-        f"select events_table.e_start, events_table.e_end from events_table WHERE e_date = {to_quotes(date)}")
+    booked = db.sql_fetchall(sql.sql_booked(date))
     await BookingState.start.set()
     await state.update_data(date=to_quotes(date))
     await state.update_data(owner=call.from_user.id)
@@ -34,7 +36,9 @@ async def select_date(call: types.CallbackQuery, state: FSMContext):
         await call.message.edit_text(f"Вы выбрали дату: {date}\n"
                                      f"На этот день мероприятий не заплпнированно", reply_markup=events_kb())
     else:
-        await call.message.edit_text(sorted(booked, key=lambda t: t['e_start'], reverse=True), reply_markup=events_kb())
+        await call.message.edit_text(f"Вы выбрали дату: {date}\n"
+                                     f"{sorted(booked, key=lambda t: t['e_start'], reverse=True)}",
+                                     reply_markup=events_kb())
 
 
 async def edit_date(call: types.CallbackQuery, state: FSMContext):
@@ -42,20 +46,21 @@ async def edit_date(call: types.CallbackQuery, state: FSMContext):
                                  f"Так же календарь мероприятий можно посмотреть в "
                                  f"<a href=moodle.tomtit-tomsk.ru>Moodle</a>\n\n"
                                  f"Сегодняшняя дата <b>{make_date()}</b>", reply_markup=make_calendar())
+    await call.message.delete()
     await state.finish()
 
 
 async def booking_date(call: types.CallbackQuery):
-    await call.message.edit_text("Введите диапазон времени\n"
-                                 "Возможные форматы\n\n"
-                                 "13.00 15.30\n"
-                                 "13.00-15.30\n"
-                                 "13:00 15:30\n"
-                                 "13.00-15.30\n", reply_markup=cancel_booking())
+    await call.message.answer("Введите диапазон времени\n"
+                              "Возможные форматы\n\n"
+                              "13.00 15.30\n"
+                              "13.00-15.30\n"
+                              "13:00 15:30\n"
+                              "13.00-15.30\n", reply_markup=cancel_booking())
     await BookingState.time.set()
 
 
-async def get_date(message: types.Message, state: FSMContext):
+async def get_time(message: types.Message, state: FSMContext):
     # Парсим то что ввел пользователь
     time = normalize_time(message.text)
     # Забираем текущую дату
@@ -73,8 +78,6 @@ async def get_date(message: types.Message, state: FSMContext):
     else:
         await message.answer("Неверный формат времени")
 
-    # TODO: огран по длине текста
-
 
 async def send_event(message: types.Message, state: FSMContext):
     db = database.Database()
@@ -86,7 +89,6 @@ async def send_event(message: types.Message, state: FSMContext):
         data = await state.get_data()
         await message.answer("Заявка принята", reply_markup=main_kb)
         await state.finish()
-        await message.answer(data)
         db.sql_query_send(sql.sql_send_event(data))
 
 
@@ -97,5 +99,5 @@ def events_register(dp: Dispatcher):
                                                                                             BookingState.time,
                                                                                             BookingState.description])
     dp.register_callback_query_handler(booking_date, text='booking', state=BookingState.start)
-    dp.register_message_handler(get_date, state=BookingState.time)
+    dp.register_message_handler(get_time, state=BookingState.time)
     dp.register_message_handler(send_event, state=BookingState.description)

@@ -39,7 +39,7 @@ admin_keyboard.add(back)
 
 
 # Клавиатура для заявок
-def user_manage_kb(b_accept, b_deny, b_next, b_prev, b_count):
+def manage_kb(b_accept, b_deny, b_next, b_prev, b_count):
     keyboard = InlineKeyboardMarkup()
     accept_button = InlineKeyboardButton(text="Одобрить", callback_data=b_accept)
     deny_button = InlineKeyboardButton(text="Отклонить", callback_data=b_deny)

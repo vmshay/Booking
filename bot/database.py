@@ -39,6 +39,16 @@ class Database:
             for v in response.values():
                 return v
 
+    def sql_fetchall(self, sql: str):
+        self.execute(sql)
+        result_set = self.fetchall()
+        return result_set
+
+    def sql_query_send(self, sql: str):
+        self.execute(sql)
+        self.commit()
+        self.close()
+
     def sql_parse_users(self, sql: str):
         self.execute(sql)
         result_set = self.fetchall()
@@ -62,15 +72,5 @@ class Database:
                 event_data = f"Описание {row['description']}\n Дата {row['dat']}"
                 events_list.append(event_data)
             return events_list
-
-    def sql_fetchall(self, sql: str):
-        self.execute(sql)
-        result_set = self.fetchall()
-        return result_set
-
-    def sql_query_send(self, sql: str):
-        self.execute(sql)
-        self.commit()
-        self.close()
 
 

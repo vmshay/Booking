@@ -1,7 +1,7 @@
 from bot import database
 from aiogram import types, Dispatcher
 from bot.functions import beauty_reg_request
-from bot.keyboards import user_manage_kb, register_kb
+from bot.keyboards import manage_kb, register_kb
 
 
 async def list_users(message: types.Message):
@@ -15,11 +15,8 @@ async def list_users(message: types.Message):
     else:
         data = db.sql_parse_users("select id,name,phone from user_table where approved = '0'")
         await message.answer(beauty_reg_request(data[0]),
-                             reply_markup=user_manage_kb(f"accept:{data[0]['ID']}",
-                                                         f"deny:{data[0]['ID']}",
-                                                         f"next:0",
-                                                         f"prev:0",
-                                                         f"1/{len(data)}"))
+                             reply_markup=manage_kb(f"u_accept:{data[0]['ID']}", f"u_deny:{data[0]['ID']}", f"u_next:0",
+                                                    f"u_prev:0", f"1/{len(data)}"))
 
 
 async def next_user_page(call: types.CallbackQuery):
@@ -34,11 +31,8 @@ async def next_user_page(call: types.CallbackQuery):
     else:
         user_id = data[index]['ID']
         await call.message.edit_text(beauty_reg_request(data[index]),
-                                     reply_markup=user_manage_kb(f"accept:{user_id}",
-                                                                 f"deny:{user_id}",
-                                                                 f"next:{index}",
-                                                                 f"prev:{index}",
-                                                                 f"{index + 1}/{len(data)}"))
+                                     reply_markup=manage_kb(f"u_accept:{user_id}", f"u_deny:{user_id}", f"u_next:{index}",
+                                                            f"u_prev:{index}", f"{index + 1}/{len(data)}"))
 
 
 async def prev_user_page(call: types.CallbackQuery):
@@ -52,11 +46,8 @@ async def prev_user_page(call: types.CallbackQuery):
     else:
         user_id = data[index]['ID']
         await call.message.edit_text(beauty_reg_request(data[index]),
-                                     reply_markup=user_manage_kb(f"accept:{user_id}",
-                                                                 f"deny:{user_id}",
-                                                                 f"next:{index}",
-                                                                 f"prev:{index}",
-                                                                 f"{index+1}/{len(data)}"))
+                                     reply_markup=manage_kb(f"u_accept:{user_id}", f"u_deny:{user_id}", f"u_next:{index}",
+                                                            f"u_prev:{index}", f"{index + 1}/{len(data)}"))
 
 
 async def accept_user(call: types.CallbackQuery):
@@ -73,34 +64,25 @@ async def accept_user(call: types.CallbackQuery):
         user_id = data[index]['ID']
         db.sql_query_send(f"UPDATE booking.user_table SET approved='1' WHERE id={user_id}")
         await call.message.edit_text(beauty_reg_request(data[index+1]),
-                                     reply_markup=user_manage_kb(f"accept:{user_id}",
-                                                                 f"deny:{user_id}",
-                                                                 f"next:{index + 1}",
-                                                                 f"prev:{index + 1}",
-                                                                 f"{index+1}/{len(data) - 1}"))
+                                     reply_markup=manage_kb(f"u_accept:{user_id}", f"u_deny:{user_id}", f"u_next:{index + 1}",
+                                                            f"u_prev:{index + 1}", f"{index + 1}/{len(data) - 1}"))
     elif index == len(data)-1:
         user_id = data[index]['ID']
         db.sql_query_send(f"UPDATE booking.user_table SET approved='1' WHERE id={user_id}")
         await call.message.edit_text(beauty_reg_request(data[index-1]),
-                                     reply_markup=user_manage_kb(f"accept:{user_id}",
-                                                                 f"deny:{user_id}",
-                                                                 f"next:{index - 1}",
-                                                                 f"prev:{index - 1}",
-                                                                 f"{index}/{len(data) - 1}"))
+                                     reply_markup=manage_kb(f"u_accept:{user_id}", f"u_deny:{user_id}", f"u_next:{index - 1}",
+                                                            f"u_prev:{index - 1}", f"{index}/{len(data) - 1}"))
     else:
         user_id = data[index]['ID']
         db.sql_query_send(f"UPDATE booking.user_table SET approved='1' WHERE id={user_id}")
         await call.message.edit_text(beauty_reg_request(data[index-1]),
-                                     reply_markup=user_manage_kb(f"accept:{user_id}",
-                                                                 f"deny:{user_id}",
-                                                                 f"next:{index}",
-                                                                 f"prev:{index - 1}",
-                                                                 f"{index}/{len(data) - 1}"))
+                                     reply_markup=manage_kb(f"u_accept:{user_id}", f"u_deny:{user_id}", f"u_next:{index}",
+                                                            f"u_prev:{index}", f"{index}/{len(data) - 1}"))
 
 
 # Регистрация команд
 def admin_handlers(dp: Dispatcher):
     dp.register_message_handler(list_users, text='👤 Управление пользователями')
-    dp.register_callback_query_handler(next_user_page, text_startswith='next')
-    dp.register_callback_query_handler(prev_user_page, text_startswith='prev')
-    dp.register_callback_query_handler(accept_user, text_startswith='accept')
+    dp.register_callback_query_handler(next_user_page, text_startswith='u_next')
+    dp.register_callback_query_handler(prev_user_page, text_startswith='u_prev')
+    dp.register_callback_query_handler(accept_user, text_startswith='u_accept')
