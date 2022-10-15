@@ -1,7 +1,7 @@
 from aiogram import types, Dispatcher
 from bot import database, sql
 from bot.keyboards import register_kb, make_calendar, events_kb, cancel_booking, main_kb
-from bot.functions import make_date, time_validator, split_time, to_quotes
+from bot.functions import make_date, time_validator, normalize_time, to_quotes, check_overlap
 from handlers.user.states import BookingState
 from aiogram.dispatcher.storage import FSMContext
 
@@ -24,21 +24,20 @@ async def make_event(message: types.message):
 
 async def select_date(call: types.CallbackQuery, state: FSMContext):
     db = database.Database()
-    print(call.data)
     date = call.data.split("_")[1]
-
-    booked = db.sql_fetchall(f"select events_table.e_start, events_table.e_end from events_table WHERE e_date = {to_quotes(date)}")
+    booked = db.sql_fetchall(
+        f"select events_table.e_start, events_table.e_end from events_table WHERE e_date = {to_quotes(date)}")
     await BookingState.start.set()
     await state.update_data(date=to_quotes(date))
     await state.update_data(owner=call.from_user.id)
     if len(booked) == 0:
-        await call.message.edit_text("На этот день мероприятий не заплпнированно", reply_markup=events_kb())
+        await call.message.edit_text(f"Вы выбрали дату: {date}\n"
+                                     f"На этот день мероприятий не заплпнированно", reply_markup=events_kb())
     else:
         await call.message.edit_text(sorted(booked, key=lambda t: t['e_start'], reverse=True), reply_markup=events_kb())
 
 
 async def edit_date(call: types.CallbackQuery, state: FSMContext):
-
     await call.message.edit_text(f"выберите дату чтобы увидеть список мероприятий\n\n"
                                  f"Так же календарь мероприятий можно посмотреть в "
                                  f"<a href=moodle.tomtit-tomsk.ru>Moodle</a>\n\n"
@@ -53,20 +52,24 @@ async def booking_date(call: types.CallbackQuery):
                                  "13.00-15.30\n"
                                  "13:00 15:30\n"
                                  "13.00-15.30\n", reply_markup=cancel_booking())
-    # TODO: Проверка на занятость
     await BookingState.time.set()
 
 
 async def get_date(message: types.Message, state: FSMContext):
+    # Парсим то что ввел пользователь
+    time = normalize_time(message.text)
+    # Забираем текущую дату
+    date = await state.get_data()
+    # Проверяем валидность времени
     if time_validator(message.text):
-        db = database.Database()
-        time = split_time(message.text)
-        await state.update_data(t_start=time[0])
-        await state.update_data(t_end=time[1])
-        sql_data = db.sql_fetchall(sql.sql_time_range(time))
-        print(len(sql_data))
-        await message.answer("Введите краткое описание мероприятия", reply_markup=cancel_booking())
-        await BookingState.description.set()
+        # Проверяем пересечения
+        if not check_overlap(time[0], time[1], date['date']):
+            await message.answer("Указанное время пеерсекается")
+        else:
+            await state.update_data(t_start=time[0])
+            await state.update_data(t_end=time[1])
+            await BookingState.description.set()
+            await message.answer("Введите краткое описание мероприятия", reply_markup=cancel_booking())
     else:
         await message.answer("Неверный формат времени")
 
@@ -75,13 +78,16 @@ async def get_date(message: types.Message, state: FSMContext):
 
 async def send_event(message: types.Message, state: FSMContext):
     db = database.Database()
-    await state.update_data(description=message.text)
-    await state.update_data(approved=0)
-    data = await state.get_data()
-    await message.answer("Заявка принята", reply_markup=main_kb)
-    await state.finish()
-    await message.answer(data)
-    db.sql_query_send(sql.sql_send_event(data))
+    if len(message.text) > 100:
+        await message.answer("Описание слишком длинное")
+    else:
+        await state.update_data(description=message.text)
+        await state.update_data(approved=0)
+        data = await state.get_data()
+        await message.answer("Заявка принята", reply_markup=main_kb)
+        await state.finish()
+        await message.answer(data)
+        db.sql_query_send(sql.sql_send_event(data))
 
 
 def events_register(dp: Dispatcher):

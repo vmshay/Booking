@@ -43,8 +43,8 @@ def user_manage_kb(b_accept, b_deny, b_next, b_prev, b_count):
     keyboard = InlineKeyboardMarkup()
     accept_button = InlineKeyboardButton(text="Одобрить", callback_data=b_accept)
     deny_button = InlineKeyboardButton(text="Отклонить", callback_data=b_deny)
-    count_button = InlineKeyboardButton(text=b_count, callback_data="NULL")  # f"{index}/{len(data)}"
-    next_button = InlineKeyboardButton(text="Далее", callback_data=b_next)   # f"next:0"
+    count_button = InlineKeyboardButton(text=b_count, callback_data="NULL")
+    next_button = InlineKeyboardButton(text="Далее", callback_data=b_next)
     prev_button = InlineKeyboardButton(text="Назад", callback_data=b_prev)
 
     keyboard.add(accept_button, deny_button)

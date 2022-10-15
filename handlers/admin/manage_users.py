@@ -45,7 +45,6 @@ async def prev_user_page(call: types.CallbackQuery):
     db = database.Database()
     data = db.sql_parse_users("select id,name,phone from user_table where approved = '0'")
     index = int(call.data.split(":")[1])-1
-    # print(f"prev_index{index}")
     if not data:
         await call.message.answer('Заявки на регистрацию отсутствуют')
     elif index < 0:
@@ -63,10 +62,7 @@ async def prev_user_page(call: types.CallbackQuery):
 async def accept_user(call: types.CallbackQuery):
     db = database.Database()
     data = db.sql_parse_users("select id,name,phone from user_table where approved = '0'")
-    # data = db.sql_parse_users("select id,name,phone from user_table where approved = '0'")
     index = int(call.message.reply_markup.inline_keyboard[1][1].text.split("/")[0])-1
-    # print(index)
-
 
     if len(data) == 1:
         user_id = data[index]['ID']
