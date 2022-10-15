@@ -90,5 +90,5 @@ def make_calendar():
     for i in range(1, days_in_month+1, 1):
         date_i = InlineKeyboardButton(text=str(i), callback_data=f"date_2022-{str(month)}-{str(i)}")
         keyboard.insert(date_i)
-    keyboard.add(button_today, button_tomorrow, button_after_tomorrow)
+    # keyboard.add(button_today, button_tomorrow, button_after_tomorrow)
     return keyboard

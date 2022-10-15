@@ -1,3 +1,4 @@
+intervaltree
 mysql
 dotenv
 aiogram==2.22.2

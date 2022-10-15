@@ -57,12 +57,30 @@ def beauty_reg_request(data):
     return result
 
 
+def beauty_booked_time(data):
+    result = ""
+    for elem in data:
+        result += f"{elem['e_start']} - {elem['e_end']}\n"
+    return result
+
+
+def beauty_event_request(data):
+    result = (f"ID: {data['ID']}\n"
+              f"Инициатор: {data['Инициатор']}\n"
+              f"Телефон: {data['Номер телефона']}\n"
+              f"Описание: {data['Описание']}\n"
+              f"Начало в: {data['Начало в']}\n"
+              f"Конец в: {data['Конец в']}")
+    return result
+
+
 def beauty_all_events(data):
-    result = (f"******************\n"
-              f"Инициатор:\n{data['Инициатор']}\n\n"
-              f"Событие:\n{data['Описание']}\n\n"
-              f"Дата:\n{data['Дата']}\n\n"
-              )
+    result = ""
+    for elem in data:
+        result += f"<b>Инициатор:</b> {elem['name']}\n" \
+                  f"<b>Событие:</b> {elem['description']}\n" \
+                  f"<b>Дата:</b> {elem['e_date']}\n" \
+                  f"<b>Время:</b> {elem['e_start']} - {elem['e_end']}\n\n"
     return result
 
 
@@ -154,4 +172,3 @@ def parse_events(data):
         events_list.append(event)
     return events_list
 
-# [{'name': 'Шаймагсумов Вильдан Маратович', 'phone': '79539299323', 'description': 'asdasdasd', 'e_start': '13:00', 'e_end': '15:30'},

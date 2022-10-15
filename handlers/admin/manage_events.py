@@ -1,7 +1,6 @@
-# TODO: Добавить управление мероприятиями
 from aiogram import types, Dispatcher
 from bot import database
-from bot.functions import parse_events
+from bot.functions import parse_events, beauty_event_request
 from bot.keyboards import register_kb,manage_kb
 from bot import sql
 
@@ -16,7 +15,7 @@ async def list_events(message: types.Message):
     if len(events) == 0:
         await message.answer("Заявки отсутствуют")
     else:
-        await message.answer(parse_events(events)[0], reply_markup=manage_kb(f"e_accept:{events[0]['id']}", f"e_deny:{events[0]['id']}", f"e_next:0",
+        await message.answer((beauty_event_request(parse_events(events)[0])), reply_markup=manage_kb(f"e_accept:{events[0]['id']}", f"e_deny:{events[0]['id']}", f"e_next:0",
                                                     f"e_prev:0", f"1/{len(events)}"))
 
 
@@ -29,10 +28,9 @@ async def next_event_page(call: types.CallbackQuery):
         await call.message.answer('Заявки отсутствуют')
     if index == len(events):
         pass
-        print("next")
     else:
         event_id = events[index]['id']
-        await call.message.edit_text(parse_events(events)[index],
+        await call.message.edit_text(beauty_event_request(parse_events(events)[index]),
                                      reply_markup=manage_kb(f"e_accept:{event_id}", f"e_deny:{event_id}", f"e_next:{index}",
                                                             f"e_prev:{index}", f"{index + 1}/{len(events)}"))
 
@@ -46,12 +44,10 @@ async def prev_event_page(call: types.CallbackQuery):
     if not events:
         await call.message.answer('Заявки отсутствуют')
     if index < 0:
-        print(events)
-        print("prev")
         pass
     else:
         event_id = events[index]['id']
-        await call.message.edit_text(parse_events(events)[index],
+        await call.message.edit_text(beauty_event_request(parse_events(events)[index]),
                                      reply_markup=manage_kb(f"e_accept:{event_id}", f"e_deny:{event_id}", f"e_next:{index}",
                                                             f"e_prev:{index}", f"{index + 1 }/{len(events)}"))
 
@@ -69,23 +65,21 @@ async def accept_event(call: types.CallbackQuery):
     elif index == 0:
         event_id = events[index]['id']
         db.sql_query_send(f"UPDATE booking.events_table SET approved='1' WHERE id={event_id}")
-        await call.message.edit_text(parse_events(events)[index+1],
+        await call.message.edit_text(beauty_event_request(parse_events(events)[index+1]),
                                      reply_markup=manage_kb(f"e_accept:{event_id}", f"e_deny:{event_id}", f"e_next:{index + 1}",
                                                             f"e_prev:{index + 1}", f"{index + 1}/{len(events) - 1}"))
     elif index == len(events)-1:
         event_id = events[index]['id']
         db.sql_query_send(f"UPDATE booking.events_table SET approved='1' WHERE id={event_id}")
-        await call.message.edit_text(parse_events(events)[index-1],
+        await call.message.edit_text(beauty_event_request(parse_events(events)[index-1]),
                                      reply_markup=manage_kb(f"e_accept:{event_id}", f"e_deny:{event_id}", f"e_next:{index - 1}",
                                                             f"e_prev:{index - 1}", f"{index}/{len(events) - 1}"))
-        print("2 " +index)
     else:
         event_id = events[index]['id']
         db.sql_query_send(f"UPDATE booking.events_table SET approved='1' WHERE id={event_id}")
-        await call.message.edit_text(parse_events(events)[index+1],
+        await call.message.edit_text(beauty_event_request(parse_events(events)[index+1]),
                                      reply_markup=manage_kb(f"e_accept:{event_id}", f"e_deny:{event_id}", f"e_next:{index}",
                                                             f"e_prev:{index}", f"{index}/{len(events) - 1}"))
-        print(event_id, index)
 
 
 def register_handlers(dp: Dispatcher):

@@ -1,7 +1,7 @@
 from aiogram import types, Dispatcher
 from bot import database, sql
 from bot.keyboards import register_kb, make_calendar, events_kb, cancel_booking, main_kb
-from bot.functions import make_date, time_validator, normalize_time, to_quotes, check_overlap
+from bot.functions import make_date, time_validator, normalize_time, to_quotes, check_overlap, beauty_booked_time
 from handlers.user.states import BookingState
 from aiogram.dispatcher.storage import FSMContext
 from bot import messages
@@ -28,7 +28,7 @@ async def make_event(message: types.message):
 async def select_date(call: types.CallbackQuery, state: FSMContext):
     db = database.Database()
     date = call.data.split("_")[1]
-    booked = db.sql_fetchall(sql.sql_booked(date))
+    booked = db.sql_fetchall(sql.sql_booked_time(date))
     await BookingState.start.set()
     await state.update_data(date=to_quotes(date))
     await state.update_data(owner=call.from_user.id)
@@ -36,8 +36,9 @@ async def select_date(call: types.CallbackQuery, state: FSMContext):
         await call.message.edit_text(f"Вы выбрали дату: {date}\n"
                                      f"На этот день мероприятий не заплпнированно", reply_markup=events_kb())
     else:
-        await call.message.edit_text(f"Вы выбрали дату: {date}\n"
-                                     f"{sorted(booked, key=lambda t: t['e_start'], reverse=True)}",
+        await call.message.edit_text(f"Вы выбрали дату: {date}\n\n"
+                                     f"Занятое время\n\n"
+                                     f"{beauty_booked_time(sorted(booked, key=lambda t: t['e_start'], reverse=False))}",
                                      reply_markup=events_kb())
 
 
@@ -89,6 +90,7 @@ async def send_event(message: types.Message, state: FSMContext):
         data = await state.get_data()
         await message.answer("Заявка принята", reply_markup=main_kb)
         await state.finish()
+        print(data)
         db.sql_query_send(sql.sql_send_event(data))
 
 
