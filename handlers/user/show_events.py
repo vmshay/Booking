@@ -43,6 +43,7 @@ async def select_range(call: types.CallbackQuery):
         else:
             await call.message.answer(beauty_all_events(sorted(data, key=lambda d: d['e_date'])))
 
+
     if call.data == "week":
         db = database.Database()
         time = date_range("week").split(" ")
