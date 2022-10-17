@@ -50,7 +50,7 @@ async def get_report(message: types.Message, state: FSMContext):
     data = await state.get_data()
     await state.finish()
     await new_bug(data)
-
+    await message.delete()
 
 def main_register(dp: Dispatcher):
     dp.register_message_handler(start_cmd, commands=['start', 'help'])

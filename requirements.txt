@@ -1,6 +1,4 @@
 intervaltree
-mysql
-dotenv
 aiogram==2.22.2
 aiohttp==3.8.3
 aiosignal==1.2.0
