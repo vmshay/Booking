@@ -4,7 +4,11 @@ import handlers.admin.admin_menu
 import logging
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(handlers=[logging.FileHandler(filename="./log_records.txt",
+                                                      encoding='utf-8', mode='a+')],
+                        format="%(asctime)s %(name)s:%(levelname)s:%(message)s",
+                        datefmt="%F %A %T",
+                        level=logging.DEBUG)
     handlers.user.registration.register_handlers(dp)
     handlers.start.main_register(dp)
     handlers.user.make_events.events_register(dp)

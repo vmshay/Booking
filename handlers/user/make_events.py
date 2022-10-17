@@ -5,11 +5,7 @@ from bot.functions import make_date, time_validator, normalize_time, to_quotes, 
 from handlers.user.states import BookingState
 from aiogram.dispatcher.storage import FSMContext
 from bot import messages
-
-
-# TODO: Убрать вывод данных состояния
-# Добавить визуализацию занятого времени
-# Переписать реактирование сообщений
+from handlers.admin.notifications import new_event
 
 
 async def make_event(message: types.message):
@@ -90,8 +86,8 @@ async def send_event(message: types.Message, state: FSMContext):
         data = await state.get_data()
         await message.answer("Заявка принята", reply_markup=main_kb)
         await state.finish()
-        print(data)
         db.sql_query_send(sql.sql_send_event(data))
+        await new_event()
 
 
 def events_register(dp: Dispatcher):

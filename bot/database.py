@@ -4,12 +4,14 @@ from bot import config as conf
 
 class Database:
     def __init__(self):
-        self.connection = mysql.connector.connect(host=conf.DB_HOST,
-                                                  user=conf.DB_USER,
-                                                  password=conf.DB_PASS,
-                                                  database=conf.DB_NAME)
-        self.cursor = self.connection.cursor(dictionary=True)
-
+        try:
+            self.connection = mysql.connector.connect(host=conf.DB_HOST,
+                                                      user=conf.DB_USER,
+                                                      password=conf.DB_PASS,
+                                                      database=conf.DB_NAME)
+            self.cursor = self.connection.cursor(dictionary=True)
+        except mysql.connector.Error as err:
+            print("Something went wrong: {}".format(err))
     def cursor(self):
         return self.cursor
 

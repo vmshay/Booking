@@ -12,3 +12,7 @@ class BookingState(StatesGroup):
     description = State()
 
 
+class SendBugState(StatesGroup):
+    send_bug = State()
+
+
