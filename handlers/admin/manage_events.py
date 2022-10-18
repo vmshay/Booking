@@ -82,9 +82,40 @@ async def accept_event(call: types.CallbackQuery):
                                                             f"e_prev:{index}", f"{index}/{len(events) - 1}"))
 
 
+async def deny_event(call: types.CallbackQuery):
+    db = database.Database()
+    events = db.sql_fetchall(sql.sql_manage_events())
+    index = int(call.message.reply_markup.inline_keyboard[1][1].text.split("/")[0])-1
+
+    if len(events) == 1:
+        event_id = events[index]['id']
+        db.sql_query_send(f"DELETE FROM booking.events_table WHERE id={event_id}")
+        await call.message.delete()
+        await call.message.answer('Заявки отсутствуют')
+    elif index == 0:
+        event_id = events[index]['id']
+        db.sql_query_send(f"DELETE FROM booking.events_table WHERE id={event_id}")
+        await call.message.edit_text(beauty_event_request(parse_events(events)[index+1]),
+                                     reply_markup=manage_kb(f"e_accept:{event_id}", f"e_deny:{event_id}", f"e_next:{index + 1}",
+                                                            f"e_prev:{index + 1}", f"{index + 1}/{len(events) - 1}"))
+    elif index == len(events)-1:
+        event_id = events[index]['id']
+        db.sql_query_send(f"DELETE FROM booking.events_table WHERE id={event_id}")
+        await call.message.edit_text(beauty_event_request(parse_events(events)[index-1]),
+                                     reply_markup=manage_kb(f"e_accept:{event_id}", f"e_deny:{event_id}", f"e_next:{index - 1}",
+                                                            f"e_prev:{index - 1}", f"{index}/{len(events) - 1}"))
+    else:
+        event_id = events[index]['id']
+        db.sql_query_send(f"DELETE FROM booking.events_table WHERE id={event_id}")
+        await call.message.edit_text(beauty_event_request(parse_events(events)[index+1]),
+                                     reply_markup=manage_kb(f"e_accept:{event_id}", f"e_deny:{event_id}", f"e_next:{index}",
+                                                            f"e_prev:{index}", f"{index}/{len(events) - 1}"))
+
+
 def register_handlers(dp: Dispatcher):
     dp.register_message_handler(list_events, text='🎫 Управление мероприятиями')
     dp.register_callback_query_handler(next_event_page, text_startswith='e_next')
     dp.register_callback_query_handler(prev_event_page, text_startswith='e_prev')
     dp.register_callback_query_handler(accept_event, text_startswith='e_accept')
+    dp.register_callback_query_handler(deny_event,text_startswith='e_deny')
 

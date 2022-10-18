@@ -80,9 +80,40 @@ async def accept_user(call: types.CallbackQuery):
                                                             f"u_prev:{index}", f"{index}/{len(data) - 1}"))
 
 
+async def deny_user(call: types.CallbackQuery):
+    db = database.Database()
+    data = db.sql_parse_users("select id,name,phone from user_table where approved = '0'")
+    index = int(call.message.reply_markup.inline_keyboard[1][1].text.split("/")[0])-1
+
+    if len(data) == 1:
+        user_id = data[index]['ID']
+        db.sql_query_send(f"DELETE FROM booking.user_table WHERE id={user_id}")
+        await call.message.delete()
+        await call.message.answer('Заявки на регистрацию отсутствуют')
+    elif index == 0:
+        user_id = data[index]['ID']
+        db.sql_query_send(f"DELETE FROM booking.user_table WHERE id={user_id}")
+        await call.message.edit_text(beauty_reg_request(data[index+1]),
+                                     reply_markup=manage_kb(f"u_accept:{user_id}", f"u_deny:{user_id}", f"u_next:{index + 1}",
+                                                            f"u_prev:{index + 1}", f"{index + 1}/{len(data) - 1}"))
+    elif index == len(data)-1:
+        user_id = data[index]['ID']
+        db.sql_query_send(f"DELETE FROM booking.user_table WHERE id={user_id}")
+        await call.message.edit_text(beauty_reg_request(data[index-1]),
+                                     reply_markup=manage_kb(f"u_accept:{user_id}", f"u_deny:{user_id}", f"u_next:{index - 1}",
+                                                            f"u_prev:{index - 1}", f"{index}/{len(data) - 1}"))
+    else:
+        user_id = data[index]['ID']
+        db.sql_query_send(f"DELETE FROM booking.user_table WHERE id={user_id}")
+        await call.message.edit_text(beauty_reg_request(data[index-1]),
+                                     reply_markup=manage_kb(f"u_accept:{user_id}", f"u_deny:{user_id}", f"u_next:{index}",
+                                                            f"u_prev:{index}", f"{index}/{len(data) - 1}"))
+
+
 # Регистрация команд
 def admin_handlers(dp: Dispatcher):
     dp.register_message_handler(list_users, text='👤 Управление пользователями')
     dp.register_callback_query_handler(next_user_page, text_startswith='u_next')
     dp.register_callback_query_handler(prev_user_page, text_startswith='u_prev')
     dp.register_callback_query_handler(accept_user, text_startswith='u_accept')
+    dp.register_callback_query_handler(deny_user, text_startswith='u_deny')
