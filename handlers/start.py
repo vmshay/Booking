@@ -15,7 +15,7 @@ async def start_cmd(message: types.Message):
     if not db.sql_fetchone(sql.check_id(message.from_user.id)):
         await message.answer(f"🤖Вас приветствует лакей ТТИТ🤖\n\n"
                              "Для доступа к функциям нужно пройти простую регистрацию\n", reply_markup=register_kb)
-    elif db.sql_fetchone(sql.check_approved(message.from_user.id)) == 0:
+    elif db.sql_fetchone(sql.check_approved(message.from_user.id)) == "0":
         await message.answer(f"Ваша заявка находится на рассмотрении", reply_markup=check_register_kb)
     else:
         await message.answer(f"🤖Вас приветствует лакей ТТИТ🤖\n"
@@ -52,8 +52,10 @@ async def get_report(message: types.Message, state: FSMContext):
     await new_bug(data)
     await message.delete()
 
+
 def main_register(dp: Dispatcher):
     dp.register_message_handler(start_cmd, commands=['start', 'help'])
     dp.register_message_handler(stop_cmd, commands=['stop'])
     dp.register_message_handler(send_report, commands=['bug'])
     dp.register_message_handler(get_report, state=SendBugState.send_bug)
+

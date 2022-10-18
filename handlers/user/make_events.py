@@ -1,11 +1,15 @@
+import asyncio
+
+import aiogram
 from aiogram import types, Dispatcher
 from bot import database, sql
 from bot.keyboards import register_kb, make_calendar, events_kb, cancel_booking, main_kb
-from bot.functions import make_date, time_validator, normalize_time, to_quotes, check_overlap, beauty_booked_time
+from bot.functions import make_date, date_range, time_validator, normalize_time, to_quotes, check_overlap, beauty_booked_time
 from handlers.user.states import BookingState
 from aiogram.dispatcher.storage import FSMContext
 from bot import messages
 from handlers.admin.notifications import new_event
+import datetime
 
 
 async def make_event(message: types.message):
@@ -25,17 +29,26 @@ async def select_date(call: types.CallbackQuery, state: FSMContext):
     db = database.Database()
     date = call.data.split("_")[1]
     booked = db.sql_fetchall(sql.sql_booked_time(date))
-    await BookingState.start.set()
-    await state.update_data(date=to_quotes(date))
-    await state.update_data(owner=call.from_user.id)
-    if len(booked) == 0:
-        await call.message.edit_text(f"Вы выбрали дату: {date}\n"
-                                     f"На этот день мероприятий не заплпнированно", reply_markup=events_kb())
+    today = datetime.datetime.now()
+    if date >= datetime.datetime.strftime(today, '%Y-%m-%d'):
+        if len(booked) == 0:
+            await BookingState.start.set()
+            await state.update_data(date=to_quotes(date))
+            await state.update_data(owner=call.from_user.id)
+            await call.message.edit_text(f"Вы выбрали дату: {date}\n"
+                                         f"На этот день мероприятий не заплпнированно", reply_markup=events_kb())
+        else:
+            await BookingState.start.set()
+            await state.update_data(date=to_quotes(date))
+            await state.update_data(owner=call.from_user.id)
+            await call.message.edit_text(f"Вы выбрали дату: {date}\n\n"
+                                         f"Занятое время\n\n"
+                                         f"{beauty_booked_time(sorted(booked, key=lambda t: t['e_start'], reverse=False))}",
+                                         reply_markup=events_kb())
     else:
-        await call.message.edit_text(f"Вы выбрали дату: {date}\n\n"
-                                     f"Занятое время\n\n"
-                                     f"{beauty_booked_time(sorted(booked, key=lambda t: t['e_start'], reverse=False))}",
-                                     reply_markup=events_kb())
+        msg = await call.message.answer("Нельзя выбрать дату позже сегодняшней")
+        await asyncio.sleep(4)
+        await msg.delete()
 
 
 async def edit_date(call: types.CallbackQuery, state: FSMContext):

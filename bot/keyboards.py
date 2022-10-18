@@ -88,7 +88,11 @@ def make_calendar():
     button_after_tomorrow = InlineKeyboardButton(text="Послезавтра", callback_data="after_tomorrow")
 
     for i in range(1, days_in_month+1, 1):
-        date_i = InlineKeyboardButton(text=str(i), callback_data=f"date_2022-{str(month)}-{str(i)}")
+        if i < 10:
+            day = f"0{i}"
+        else:
+            day = i
+        date_i = InlineKeyboardButton(text=str(i), callback_data=f"date_2022-{str(month)}-{str(day)}")
         keyboard.insert(date_i)
     # keyboard.add(button_today, button_tomorrow, button_after_tomorrow)
     return keyboard
