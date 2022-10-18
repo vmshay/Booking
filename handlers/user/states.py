@@ -16,3 +16,5 @@ class SendBugState(StatesGroup):
     send_bug = State()
 
 
+class MessageToAll(StatesGroup):
+    send_message = State()

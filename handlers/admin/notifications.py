@@ -2,6 +2,7 @@
 from bot.dispatcher import bot
 import bot.config as cnf
 
+
 async def new_event():
     await bot.send_message(cnf.CHAT_ID, "Новая заявка мероприятия")
 
@@ -11,7 +12,11 @@ async def new_user():
 
 
 async def new_bug(data):
-    msg = f"❗Баг❗\n" \
-          f"Баг: {data['bug']}\n" \
+    msg = f"<b>Обратная связь</b>\n" \
+          f"Сообщение: {data['bug']}\n" \
           f"Отправитель: {data['from_user']}\n"
     await bot.send_message(cnf.CHAT_ID, msg)
+
+
+async def message_to_all(msg):
+    await bot.send_message(msg)
