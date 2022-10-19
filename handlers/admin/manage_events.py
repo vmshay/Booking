@@ -12,6 +12,7 @@ async def list_events(message: types.Message):
         await message.delete()
         await message.answer("Команды станут доступны после регистрации", reply_markup=register_kb)
     events = db.sql_fetchall(sql.sql_manage_events())
+    print(events)
     if len(events) == 0:
         await message.answer("Заявки отсутствуют")
     else:
