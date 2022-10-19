@@ -65,7 +65,6 @@ def beauty_booked_time(data):
 
 
 def beauty_event_request(data):
-    print(data)
     result = (f"ID: {data['ID']}\n"
               f"Инициатор: {data['Инициатор']}\n"
               f"Телефон: {data['Номер телефона']}\n"

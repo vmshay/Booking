@@ -4,7 +4,7 @@ import handlers.admin.admin_menu
 import logging
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     handlers.user.registration.register_handlers(dp)
     handlers.user.make_events.events_register(dp)
     handlers.user.show_events.register(dp)
