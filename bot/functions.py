@@ -156,7 +156,7 @@ def check_overlap(start, end, date):
     times = db.sql_fetchall(f"select e_start,e_end from events_table where e_date = {date}")
     for time in times:
         it.addi(time['e_start'], time['e_end'])
-        return not it.overlaps(start, end)
+    return not it.overlaps(start, end)
 
 
 def parse_events(data):
