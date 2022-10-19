@@ -87,8 +87,12 @@ async def get_time(message: types.Message, state: FSMContext):
     date = await state.get_data()
     # Проверяем валидность времени
     if time_validator(message.text):
-        # Проверяем пересечения
-        if not check_overlap(time[0], time[1], date['date']):
+        # Проверяем что старт не позже конца
+        if time[0] > time[1]:
+            msg = await message.answer("Начало не может быть раньше конца")
+            await asyncio.sleep(5)
+            await msg.delete()
+        elif not check_overlap(time[0], time[1], date['date']):
             msg = await message.answer("Указанное время пеерсекается")
             await asyncio.sleep(5)
             await msg.delete()
