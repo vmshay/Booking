@@ -69,6 +69,7 @@ def beauty_event_request(data):
               f"Инициатор: {data['Инициатор']}\n"
               f"Телефон: {data['Номер телефона']}\n"
               f"Описание: {data['Описание']}\n"
+              f"Дата: {data['Дата']}"
               f"Начало в: {data['Начало в']}\n"
               f"Конец в: {data['Конец в']}")
     return result
@@ -166,6 +167,7 @@ def parse_events(data):
                  "Инициатор": elem['name'],
                  "Номер телефона": elem['phone'],
                  "Описание": elem['description'],
+                 "Дата": elem['e_date'],
                  "Начало в": elem['e_start'],
                  "Конец в": elem['e_end']}
 
