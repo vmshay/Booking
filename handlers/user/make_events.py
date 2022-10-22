@@ -122,10 +122,10 @@ async def send_event(message: types.Message, state: FSMContext):
         data = await state.get_data()
         await message.delete()
         msg = await message.answer("Заявка принята", reply_markup=main_kb)
-        await asyncio.sleep(5)
-        await msg.delete()
         await state.finish()
         db.sql_query_send(sql.sql_send_event(data))
+        await asyncio.sleep(5)
+        await msg.delete()
         await new_event()
 
 
