@@ -12,6 +12,7 @@ class Database:
             self.cursor = self.connection.cursor(dictionary=True)
         except mysql.connector.Error as err:
             print("Something went wrong: {}".format(err))
+
     def cursor(self):
         return self.cursor
 

@@ -136,17 +136,21 @@ def time_validator(data):
 
 def normalize_time(data):
     if len(data.split(" ")) == 2:
-        if len(data.split(" ")[0]) == 4:
-            data = "0" + data
-            return data.replace(".", ":").split(" ")
-        else:
-            return data.replace(".", ":").split(" ")
-    elif len(data.split("-")) == 2:
-        if len(data.split("-")[0]) == 4:
-            data = "0" + data
-            return data.replace(".", ":").split("-")
-        else:
-            return data.replace(".", ":").split("-")
+        data = data.split(" ")
+        if len(data[0]) == 4:
+            data[0] = "0" + data[0]
+        if len(data[1]) == 4:
+            data[1] = "0" + data[1]
+        data = f"{data[0]} {data[1]}"
+        return data.replace(".", ":").split(" ")
+    if len(data.split("-")) == 2:
+        data = data.split("-")
+        if len(data[0]) == 4:
+            data[0] = "0" + data[0]
+        if len(data[1]) == 4:
+            data[1] = "0" + data[1]
+        data = f"{data[0]} {data[1]}"
+        return data.replace(".", ":").split(" ")
     else:
         return False
 
@@ -157,7 +161,10 @@ def check_overlap(start, end, date):
     times = db.sql_fetchall(f"select e_start,e_end from events_table where e_date = {date}")
     for time in times:
         it.addi(time['e_start'], time['e_end'])
+
+    print(it.overlaps(start, end))
     return not it.overlaps(start, end)
+
 
 
 def parse_events(data):

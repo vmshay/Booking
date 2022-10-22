@@ -1,9 +1,8 @@
 import asyncio
-import aiogram
 from aiogram import types, Dispatcher
 from bot import database, sql
 from bot.keyboards import register_kb, make_calendar, events_kb, cancel_booking, main_kb
-from bot.functions import make_date, date_range, time_validator, normalize_time, to_quotes, check_overlap, beauty_booked_time
+from bot.functions import make_date, time_validator, normalize_time, to_quotes, check_overlap, beauty_booked_time
 from handlers.user.states import BookingState
 from aiogram.dispatcher.storage import FSMContext
 from bot import messages
@@ -93,12 +92,14 @@ async def get_time(message: types.Message, state: FSMContext):
             await asyncio.sleep(5)
             await msg.delete()
         elif not check_overlap(time[0], time[1], date['date']):
+            print(time[0],time[1])
             msg = await message.answer("Указанное время пеерсекается")
             await asyncio.sleep(5)
             await msg.delete()
         else:
             await state.update_data(t_start=time[0])
             await state.update_data(t_end=time[1])
+            print(time)
             await BookingState.description.set()
             msg = await message.answer("Введите краткое описание мероприятия", reply_markup=cancel_booking())
             await asyncio.sleep(10)

@@ -1,10 +1,8 @@
 import asyncio
-
 from aiogram import types, Dispatcher
 from bot.keyboards import main_kb, register_kb,   check_register_kb
 from bot import database
 from bot import sql
-from bot.dispatcher import bot
 from aiogram.dispatcher.storage import FSMContext
 from handlers.user.states import SendBugState, MessageToAll
 from handlers.admin.notifications import new_bug, message_to_all

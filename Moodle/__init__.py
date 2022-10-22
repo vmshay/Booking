@@ -1,2 +1,3 @@
 # Выгрузка мероприятий в Moodle
-import Moodle.calendar_gen
+import Moodle.send_calendar
+import Moodle.make_calendar
