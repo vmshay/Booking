@@ -60,7 +60,7 @@ async def select_range(call: types.CallbackQuery):
         time = "'" + time[0] + "' " + time[1] + " '" + time[2] + "'"
         data = db.sql_fetchall(sql=sql.get_range_events(time))
         if len(data) == 0:
-            await call.message.answer("В этом кесяце мероприятий нет")
+            await call.message.answer("В этом месяце мероприятий нет")
         else:
             await call.message.answer(beauty_all_events(sorted(data, key=lambda d: d['e_date'])))
 
