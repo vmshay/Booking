@@ -1,0 +1,34 @@
+START:VCALENDAR
+BEGIN:VEVENT
+UID:43@moodle.tomtit-tomsk.ru
+SUMMARY:Шаймагсумов Вильдан Маратович
+DESCRIPTION:Шаймагсумов Вильдан Маратович\n123
+LOCATION:405
+DTSTART;TZID=US-Eastern:20221029T080000
+DTEND;TZID=US-Eastern:20221029T090000
+END:VEVENT
+BEGIN:VEVENT
+UID:45@moodle.tomtit-tomsk.ru
+SUMMARY:Шаймагсумов Вильдан Маратович
+DESCRIPTION:Шаймагсумов Вильдан Маратович\n2345
+LOCATION:405
+DTSTART;TZID=US-Eastern:20221029T130000
+DTEND;TZID=US-Eastern:20221029T153000
+END:VEVENT
+BEGIN:VEVENT
+UID:47@moodle.tomtit-tomsk.ru
+SUMMARY:Шаймагсумов Вильдан Маратович
+DESCRIPTION:Шаймагсумов Вильдан Маратович\n456
+LOCATION:405
+DTSTART;TZID=US-Eastern:20221030T080000
+DTEND;TZID=US-Eastern:20221030T090000
+END:VEVENT
+BEGIN:VEVENT
+UID:48@moodle.tomtit-tomsk.ru
+SUMMARY:Шаймагсумов Вильдан Маратович
+DESCRIPTION:Шаймагсумов Вильдан Маратович\n567
+LOCATION:405
+DTSTART;TZID=US-Eastern:20221024T080000
+DTEND;TZID=US-Eastern:20221024T090000
+END:VEVENT
+END:VCALENDAR
