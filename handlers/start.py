@@ -18,7 +18,7 @@ async def start_cmd(message: types.Message):
     elif db.sql_fetchone(sql.check_approved(message.from_user.id)) == "0":
         await message.answer(f"Ваша заявка находится на рассмотрении", reply_markup=check_register_kb)
     else:
-        msg = await message.answer(f"🤖Вас приветствует лакей ТТИТ🤖\n"
+        await message.answer(f"🤖Вас приветствует лакей ТТИТ🤖\n"
                                    f"\n"
                                    f"Я помогу Вам запланировать мероприятие в 405 аудитории.\n\n"
                                    f"Меня еще разрабатыают по этому умею немного.\n\n"
@@ -30,8 +30,8 @@ async def start_cmd(message: types.Message):
                                    f"Можете обратиться к @FeldwebelWillman\n"
                                    f"Или воспользовтаься обратной связью /feedback",
                                    reply_markup=main_kb)
-        await asyncio.sleep(10)
-        await msg.delete()
+        # await asyncio.sleep(10)
+        # await msg.delete()
 
 
 async def stop_cmd(message: types.Message):

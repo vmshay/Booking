@@ -20,9 +20,10 @@ async def make_event(message: types.message):
         if message.text == "🎯 Запланировать мероприятие":
             await message.delete()
             # TODO: Добавить переход на следующий месяц
-            msg = await message.answer(messages.events_welcome(make_date()), reply_markup=make_calendar())
-            await asyncio.sleep(60)
-            await msg.delete()
+            await message.answer(messages.events_welcome(make_date()), reply_markup=make_calendar())
+            # await message.answer(messages.events_welcome(make_date()), reply_markup=make_calendar())
+            # await asyncio.sleep(60)
+            # await msg.delete()
 
 
 async def select_date(call: types.CallbackQuery, state: FSMContext):
@@ -35,47 +36,47 @@ async def select_date(call: types.CallbackQuery, state: FSMContext):
             await BookingState.start.set()
             await state.update_data(date=to_quotes(date))
             await state.update_data(owner=call.from_user.id)
-            msg = await call.message.edit_text(f"Вы выбрали дату: {date}\n"
+            await call.message.edit_text(f"Вы выбрали дату: {date}\n"
                                                f"На этот день мероприятий не запланированно", reply_markup=events_kb())
-            await asyncio.sleep(30)
-            await msg.delete()
+            # await asyncio.sleep(30)
+            # await msg.delete()
         else:
             await BookingState.start.set()
             await state.update_data(date=to_quotes(date))
             await state.update_data(owner=call.from_user.id)
-            msg = await call.message.edit_text(f"Вы выбрали дату: {date}\n\n"
+            await call.message.edit_text(f"Вы выбрали дату: {date}\n\n"
                                                f"Занятое время\n\n"
                                                f"{beauty_booked_time(sorted(booked, key=lambda t: t['e_start'], reverse=False))}",
                                                reply_markup=events_kb())
-            await asyncio.sleep(60)
-            await msg.delete()
+            # await asyncio.sleep(60)
+            # await msg.delete()
     else:
-        msg = await call.message.answer("Нельзя выбрать дату позже сегодняшней")
-        await asyncio.sleep(5)
-        await msg.delete()
+        await call.message.answer("Нельзя выбрать дату позже сегодняшней")
+        # await asyncio.sleep(5)
+        # await msg.delete()
 
 
 async def edit_date(call: types.CallbackQuery, state: FSMContext):
-    msg = await call.message.edit_text(f"выберите дату чтобы увидеть список мероприятий\n\n"
+    await call.message.edit_text(f"выберите дату чтобы увидеть список мероприятий\n\n"
                                        f"Так же календарь мероприятий можно посмотреть в "
                                        f"<a href=moodle.tomtit-tomsk.ru>Moodle</a>\n\n"
                                        f"Сегодняшняя дата <b>{make_date()}</b>", reply_markup=make_calendar())
     await call.message.delete()
     await state.finish()
-    await asyncio.sleep(30)
-    await msg.delete()
+    # await asyncio.sleep(30)
+    # await msg.delete()
 
 
 async def booking_date(call: types.CallbackQuery):
-    msg = await call.message.answer("Введите диапазон времени\n"
+    await call.message.answer("Введите диапазон времени\n"
                                     "Возможные форматы\n\n"
                                     "13.00 15.30\n"
                                     "13.00-15.30\n"
                                     "13:00 15:30\n"
                                     "13.00-15.30\n", reply_markup=cancel_booking())
     await BookingState.time.set()
-    await asyncio.sleep(20)
-    await msg.delete()
+    # await asyncio.sleep(20)
+    # await msg.delete()
 
 
 async def get_time(message: types.Message, state: FSMContext):
@@ -88,45 +89,47 @@ async def get_time(message: types.Message, state: FSMContext):
     if time_validator(message.text):
         # Проверяем что старт не позже конца
         if time[0] > time[1]:
-            msg = await message.answer("Начало не может быть раньше конца")
-            await asyncio.sleep(5)
-            await msg.delete()
+            await message.answer("Начало не может быть раньше конца")
+            # await asyncio.sleep(5)
+            # await msg.delete()
         elif not check_overlap(time[0], time[1], date['date']):
             print(time[0],time[1])
-            msg = await message.answer("Указанное время пеерсекается")
-            await asyncio.sleep(5)
-            await msg.delete()
+            await message.answer("Указанное время пеерсекается")
+            # await asyncio.sleep(5)
+            # await msg.delete()
         else:
             await state.update_data(t_start=time[0])
             await state.update_data(t_end=time[1])
             print(time)
             await BookingState.description.set()
-            msg = await message.answer("Введите краткое описание мероприятия", reply_markup=cancel_booking())
-            await asyncio.sleep(10)
-            await msg.delete()
+            await message.answer("Введите краткое описание мероприятия", reply_markup=cancel_booking())
+            # await asyncio.sleep(10)
+            # await msg.delete()
     else:
-        msg = await message.answer("Неверный формат времени")
-        await asyncio.sleep(5)
-        await msg.delete()
+        await message.answer("Неверный формат времени")
+        # await asyncio.sleep(5)
+        # await msg.delete()
 
 
 async def send_event(message: types.Message, state: FSMContext):
     db = database.Database()
     if len(message.text) > 100:
-        msg = await message.answer("Описание слишком длинное")
-        await asyncio.sleep(5)
-        await msg.delete()
-        await message.delete()
+        await message.answer("Описание слишком длинное")
+        # await asyncio.sleep(5)
+        # await msg.delete()
+        # await message.delete()
     else:
         await state.update_data(description=message.text)
         await state.update_data(approved=0)
         data = await state.get_data()
         await message.delete()
-        msg = await message.answer("Заявка принята", reply_markup=main_kb)
+        await message.answer("Заявка принята\n"
+                             "Уведомлять администраторов не требуется"
+                             "они получат оповощение автоматически", reply_markup=main_kb)
         await state.finish()
         db.sql_query_send(sql.sql_send_event(data))
-        await asyncio.sleep(5)
-        await msg.delete()
+        # await asyncio.sleep(5)
+        # await msg.delete()
         await new_event()
 
 
