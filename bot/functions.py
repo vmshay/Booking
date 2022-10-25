@@ -166,7 +166,6 @@ def check_overlap(start, end, date):
     return not it.overlaps(start, end)
 
 
-
 def parse_events(data):
     events_list = []
     for elem in data:
@@ -180,4 +179,13 @@ def parse_events(data):
 
         events_list.append(event)
     return events_list
+
+
+def month_text(data):
+    months = ["Январь","Февраль","Март",
+              "Апрель","Май","Июнь",
+              "Июль","Август","Сентябрь",
+              "Октябрь","Ноябрь","Декабрь"]
+    return months[data]
+
 

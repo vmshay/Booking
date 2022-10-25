@@ -7,7 +7,6 @@ env_path = '.env'
 load_dotenv(dotenv_path=env_path)
 
 BOT_TOKEN = os.getenv('BOT_TOKEN')
-BOT_TOKEN_TEST = os.getenv('BOT_TOKEN_TEST')
 DB_HOST = os.getenv('DB_HOST')
 DB_NAME = os.getenv('DB_NAME')
 DB_USER = os.getenv('DB_USER')

@@ -1,12 +1,13 @@
-import calendar
-import datetime
+# def month_text(data):
+#     months = ["Январь","Февраль","Март",
+#               "Апрель","Май","Июнь",
+#               "Июль","Август","Сентябрь",
+#               "Октябрь","Ноябрь","Декабрь"]
+#     return months[data]
+#
+#
+# print(month_text(11))
+from datetime import datetime
 
-today = datetime.date.today()
-month = today.month
-days_in_month = calendar.monthrange(today.year, month)[1]
-
-
-print(f"Дата сегодня {today}")
-print(f"Месяц {month}")
-print(f"Дней в месяце {days_in_month}")
-
+print("2022-10-25" > "2022-9-25")
+print(datetime.now())

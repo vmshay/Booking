@@ -1,7 +1,5 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
-import calendar
-import datetime
-
+from bot.functions import month_text
 
 # Основная
 button_bind = KeyboardButton('🎯 Запланировать мероприятие')
@@ -57,7 +55,7 @@ def events_range_kb():
     today_button = InlineKeyboardButton(text="За сегодня", callback_data="today")
     week_button = InlineKeyboardButton(text="За неделю", callback_data="week")
     month_button = InlineKeyboardButton(text="За месяц", callback_data="month")
-    keyboard.add(today_button,week_button,month_button)
+    keyboard.add(today_button, week_button, month_button)
     return keyboard
 
 
@@ -72,18 +70,18 @@ def events_kb():
     keyboard = InlineKeyboardMarkup()
     booking_button = InlineKeyboardButton(text='Забронировать', callback_data="booking")
     back_button = InlineKeyboardButton(text='Отменить', callback_data="change")
-    keyboard.add(back_button,booking_button)
-    # keyboard.add(booking_button)
+    keyboard.add(back_button, booking_button)
     return keyboard
 
 
 # Генератор календаря
 def make_calendar(month, days_in_month, m_prev, m_next):
-
+    mont_text = InlineKeyboardButton(text=month_text(month-1), callback_data='NULL')
     keyboard = InlineKeyboardMarkup(row_width=7)
     prev_month = InlineKeyboardButton(text="<<", callback_data=m_prev)
     next_month = InlineKeyboardButton(text=">>", callback_data=m_next)
 
+    keyboard.row_width = 7
     for i in range(1, days_in_month+1, 1):
         if i < 10:
             day = f"0{i}"
@@ -92,6 +90,6 @@ def make_calendar(month, days_in_month, m_prev, m_next):
         date_i = InlineKeyboardButton(text=str(i), callback_data=f"date_2022-{str(month)}-{str(day)}")
         keyboard.insert(date_i)
 
-    # keyboard.add(button_today, button_tomorrow, button_after_tomorrow)
+    keyboard.add(mont_text)
     keyboard.add(prev_month, next_month)
     return keyboard

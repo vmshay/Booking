@@ -3,7 +3,7 @@ from bot import database
 from bot.functions import parse_events, beauty_event_request
 from bot.keyboards import register_kb,manage_kb
 from bot import sql
-
+from bot.dispatcher import bot
 
 async def list_events(message: types.Message):
     db = database.Database()
@@ -55,7 +55,7 @@ async def accept_event(call: types.CallbackQuery):
     db = database.Database()
     events = db.sql_fetchall(sql.sql_manage_events())
     index = int(call.message.reply_markup.inline_keyboard[1][1].text.split("/")[0])-1
-
+    await bot.send_message(events[index]['tg_id'], "Заявка на мероприятие одобрена")
     if len(events) == 1:
         event_id = events[index]['id']
         db.sql_query_send(f"UPDATE booking.events_table SET approved='1' WHERE id={event_id}")
