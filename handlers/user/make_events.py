@@ -8,9 +8,13 @@ from aiogram.dispatcher.storage import FSMContext
 from bot import messages
 from handlers.admin.notifications import new_event
 import datetime
+import calendar
 
 
 async def make_event(message: types.message):
+    today = datetime.date.today()
+    month = today.month
+    days_in_month = calendar.monthrange(today.year, month)[1]
     db = database.Database()
     if not db.sql_fetchone(f"select tg_id from user_table where tg_id ={message.from_user.id}") or \
             not db.sql_fetchone(f"select approved from user_table where tg_id={message.from_user.id}"):
@@ -20,7 +24,11 @@ async def make_event(message: types.message):
         if message.text == "🎯 Запланировать мероприятие":
             await message.delete()
             # TODO: Добавить переход на следующий месяц
-            await message.answer(messages.events_welcome(make_date()), reply_markup=make_calendar())
+
+            await message.answer(messages.events_welcome(make_date()), reply_markup=make_calendar(month,
+                                                                                                  days_in_month,
+                                                                                                  'month_prev:0',
+                                                                                                  'month_next:0'))
             # await message.answer(messages.events_welcome(make_date()), reply_markup=make_calendar())
             # await asyncio.sleep(60)
             # await msg.delete()
@@ -60,7 +68,7 @@ async def edit_date(call: types.CallbackQuery, state: FSMContext):
     await call.message.edit_text(f"выберите дату чтобы увидеть список мероприятий\n\n"
                                        f"Так же календарь мероприятий можно посмотреть в "
                                        f"<a href=moodle.tomtit-tomsk.ru>Moodle</a>\n\n"
-                                       f"Сегодняшняя дата <b>{make_date()}</b>", reply_markup=make_calendar())
+                                       f"Сегодняшняя дата <b>{make_date()}</b>", reply_markup=make_calendar(month, days_in_month))
     await call.message.delete()
     await state.finish()
     # await asyncio.sleep(30)
@@ -69,11 +77,11 @@ async def edit_date(call: types.CallbackQuery, state: FSMContext):
 
 async def booking_date(call: types.CallbackQuery):
     await call.message.answer("Введите диапазон времени\n"
-                                    "Возможные форматы\n\n"
-                                    "13.00 15.30\n"
-                                    "13.00-15.30\n"
-                                    "13:00 15:30\n"
-                                    "13.00-15.30\n", reply_markup=cancel_booking())
+                              "Возможные форматы\n\n"
+                              "13.00 15.30\n"
+                              "8.00-9.00\n"
+                              "10:30 14:00\n"
+                              "11.50-12.30\n", reply_markup=cancel_booking())
     await BookingState.time.set()
     # await asyncio.sleep(20)
     # await msg.delete()
@@ -124,13 +132,23 @@ async def send_event(message: types.Message, state: FSMContext):
         data = await state.get_data()
         await message.delete()
         await message.answer("Заявка принята\n"
-                             "Уведомлять администраторов не требуется"
+                             "Уведомлять администраторов не требуется\n"
                              "они получат оповощение автоматически", reply_markup=main_kb)
         await state.finish()
         db.sql_query_send(sql.sql_send_event(data))
         # await asyncio.sleep(5)
         # await msg.delete()
         await new_event()
+
+
+async def next_month(call: types.CallbackQuery):
+    m_id = int(call.data.split(":")[1]) + 1
+    month = datetime.date.today().month
+    month = month-m_id
+    days_in_month = calendar.monthrange(2022, month-1)[1]
+    print(month)
+    await call.message.edit_reply_markup(reply_markup=make_calendar(month, days_in_month,
+                                                                    f"month_prev:{m_id}", f"month_next:{m_id}"))
 
 
 def events_register(dp: Dispatcher):
@@ -142,3 +160,4 @@ def events_register(dp: Dispatcher):
     dp.register_callback_query_handler(booking_date, text='booking', state=BookingState.start)
     dp.register_message_handler(get_time, state=BookingState.time)
     dp.register_message_handler(send_event, state=BookingState.description)
+    dp.register_callback_query_handler(next_month, text_startswith='month_next')

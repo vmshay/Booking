@@ -40,7 +40,6 @@ async def prev_event_page(call: types.CallbackQuery):
 
     events = db.sql_fetchall(sql.sql_manage_events())
     index = int(call.data.split(":")[1]) - 1
-
     if not events:
         await call.message.answer('Заявки отсутствуют')
     if index < 0:

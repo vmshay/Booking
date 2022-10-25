@@ -76,4 +76,3 @@ class Database:
                 events_list.append(event_data)
             return events_list
 
-

@@ -78,14 +78,11 @@ def events_kb():
 
 
 # Генератор календаря
-def make_calendar():
-    current_date = datetime.date.today()
-    days_in_month = calendar.monthrange(current_date.year, current_date.month)[1]
-    month = datetime.datetime.today().month
+def make_calendar(month, days_in_month, m_prev, m_next):
+
     keyboard = InlineKeyboardMarkup(row_width=7)
-    button_today = InlineKeyboardButton(text="Сегодня", callback_data="today")
-    button_tomorrow = InlineKeyboardButton(text="Завтра", callback_data="tomorrow")
-    button_after_tomorrow = InlineKeyboardButton(text="Послезавтра", callback_data="after_tomorrow")
+    prev_month = InlineKeyboardButton(text="<<", callback_data=m_prev)
+    next_month = InlineKeyboardButton(text=">>", callback_data=m_next)
 
     for i in range(1, days_in_month+1, 1):
         if i < 10:
@@ -94,5 +91,7 @@ def make_calendar():
             day = i
         date_i = InlineKeyboardButton(text=str(i), callback_data=f"date_2022-{str(month)}-{str(day)}")
         keyboard.insert(date_i)
+
     # keyboard.add(button_today, button_tomorrow, button_after_tomorrow)
+    keyboard.add(prev_month, next_month)
     return keyboard
