@@ -69,7 +69,7 @@ async def get_fio(message: types.Message, state: FSMContext):
 
         db.sql_query_send(sql.sql_send(reg_data))
         await state.finish()
-        # await new_user()
+        await new_user()
 
 
 async def reset_register(message: types.Message, state: FSMContext):

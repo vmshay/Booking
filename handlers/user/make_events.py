@@ -141,6 +141,7 @@ async def send_event(message: types.Message, state: FSMContext):
                              "они получат оповощение автоматически", reply_markup=main_kb)
         await state.finish()
         db.sql_query_send(sql.sql_send_event(data))
+        await new_event()
 
 
 async def next_month(call: types.CallbackQuery):
