@@ -58,7 +58,7 @@ def sql_send_event(data):
 
 
 def sql_manage_events():
-    sql = f"select events_table.id, user_table.name, user_table.phone, events_table.description, events_table.e_date, events_table.e_start, events_table.e_end from events_table inner join user_table on events_table.owner = user_table.tg_id WHERE events_table.approved = 0"
+    sql = f"select user_table.tg_id, events_table.id, user_table.name, user_table.phone, events_table.description, events_table.e_date, events_table.e_start, events_table.e_end from events_table inner join user_table on events_table.owner = user_table.tg_id WHERE events_table.approved = 0"
     return sql
 
 

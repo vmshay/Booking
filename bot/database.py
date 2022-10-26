@@ -60,7 +60,10 @@ class Database:
             return False
         elif len(result_set) > 0:
             for row in result_set:
-                users_data = {"ID": row['id'], "ФИО": row['name'], "Номер телефона": row['phone']}
+                users_data = {"ID": row['id'],
+                              "ФИО": row['name'],
+                              "Номер телефона": row['phone'],
+                              "tg_id": row['tg_id']}
                 users_list.append(users_data)
             return users_list
 
@@ -75,5 +78,4 @@ class Database:
                 event_data = f"Описание {row['description']}\n Дата {row['dat']}"
                 events_list.append(event_data)
             return events_list
-
 
