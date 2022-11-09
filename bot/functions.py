@@ -162,7 +162,7 @@ def check_overlap(start, end, date):
     for time in times:
         it.addi(time['e_start'], time['e_end'])
 
-    print(it.overlaps(start, end))
+    # print(it.overlaps(start, end))
     return not it.overlaps(start, end)
 
 

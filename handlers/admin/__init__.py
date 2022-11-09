@@ -1,4 +1,4 @@
-import handlers.admin.admin_menu
-import handlers.admin.manage_users
-import handlers.admin.manage_events
-import handlers.admin.notifications
+import handlers.admin.accept_event
+import handlers.admin.accept_user
+import handlers.admin.deny_user
+import handlers.admin.deny_event

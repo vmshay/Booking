@@ -1,6 +1,3 @@
-import handlers.admin.admin_menu
-import handlers.admin.manage_users
-import handlers.admin.manage_events
-import handlers.user.registration
 import handlers.start
-import handlers.user.make_events
+import handlers.admin
+import handlers.user

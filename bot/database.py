@@ -50,7 +50,6 @@ class Database:
     def sql_query_send(self, sql: str):
         self.execute(sql)
         self.commit()
-        self.close()
 
     def sql_parse_users(self, sql: str):
         self.execute(sql)
