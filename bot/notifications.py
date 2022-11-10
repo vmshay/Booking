@@ -9,7 +9,7 @@ async def new_bug(data):
     msg = f"<b>Обратная связь</b>\n" \
           f"Сообщение: {data['bug']}\n" \
           f"Отправитель: @{data['from_user']}\n"
-    await bot.send_message(cnf.TRASH_CHAT, msg)
+    await bot.send_message(cnf.CHAT_ID, msg)
 
 
 async def new_user(data):
@@ -17,7 +17,7 @@ async def new_user(data):
           f"TG: @{data['tg']}\n" \
           f"ФИО: {data['FIO']}\n" \
           f"Номер телефона: {data['number']}"
-    await bot.send_message(cnf.TRASH_CHAT, msg, reply_markup=new_user_kb(f"u_accept", f"u_deny", data['id']))
+    await bot.send_message(cnf.CHAT_ID, msg, reply_markup=new_user_kb(f"u_accept", f"u_deny", data['id']))
 
 
 async def new_event(data):
@@ -26,7 +26,7 @@ async def new_event(data):
           f"ФИО: {data['username']}\n" \
           f"C {data['t_start']} до {data['t_end']}\n" \
           f"Описание {data['description']}"
-    await bot.send_message(cnf.TRASH_CHAT, msg, reply_markup=new_user_kb(f"e_accept", f"e_deny", data['id']))
+    await bot.send_message(cnf.CHAT_ID, msg, reply_markup=new_user_kb(f"e_accept", f"e_deny", data['id']))
 
 
 async def notify_user_reg_accept(u_id):

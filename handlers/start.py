@@ -66,28 +66,9 @@ async def get_report(message: types.Message, state: FSMContext):
     await message.delete()
 
 
-async def broadcast_cmd(message: types.Message):
-    await message.delete()
-    await MessageToAll.send_message.set()
-    msg = await message.answer("Введите сооьщение которое будет отправленно всем пользователям")
-    await asyncio.sleep(5)
-    await msg.delete()
-
-
-async def get_message(message: types.Message, state: FSMContext):
-    await state.update_data(bug=message.text)
-    await state.update_data(from_user=message.from_user.username)
-    data = await state.get_data()
-    await state.finish()
-    await message_to_all(data)
-    await message.delete()
-
-
 def main_register(dp: Dispatcher):
     dp.register_message_handler(start_cmd, commands=['start', 'help'])
     dp.register_message_handler(stop_cmd, commands=['stop'])
     dp.register_message_handler(send_report, commands=['feedback'])
     dp.register_message_handler(get_report, state=SendBugState.send_bug)
-    dp.register_message_handler(broadcast_cmd, commands=['broadcast'])
-    dp.register_message_handler(get_message, state=MessageToAll.send_message)
 

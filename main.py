@@ -17,4 +17,5 @@ if __name__ == '__main__':
     handlers.admin.deny_event.register(dp)
     handlers.user.my_events.register(dp)
     handlers.user.all_events.register(dp)
-    executor.start_polling(dp, skip_updates=True)  # , on_startup=on_start
+    handlers.admin.all_message.register(dp)
+    executor.start_polling(dp, skip_updates=True, on_startup=on_start)
