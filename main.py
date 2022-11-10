@@ -14,4 +14,4 @@ if __name__ == '__main__':
     handlers.admin.manage_users.admin_handlers(dp)
     handlers.admin.manage_events.register_handlers(dp)
     handlers.start.main_register(dp)
-    executor.start_polling(dp, skip_updates=True)  # , on_startup=on_start
+    executor.start_polling(dp, skip_updates=True, on_startup=on_start)
